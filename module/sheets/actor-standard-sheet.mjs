@@ -12,7 +12,10 @@ import { GroupCheck as GroupCheckV2 } from '../checks/group-check.mjs';
 import { InlineHelper } from '../helpers/inline-helper.mjs';
 
 const TOGGLEABLE_STATUS_EFFECT_IDS = ['crisis', 'slow', 'dazed', 'enraged', 'dex-up', 'mig-up', 'ins-up', 'wlp-up', 'guard', 'weak', 'shaken', 'poisoned', 'dex-down', 'mig-down', 'ins-down', 'wlp-down'];
-
+const CLOCK_TYPES = ['zeroPower', 'ritual', 'miscAbility', 'rule'];
+const SKILL_TYPES = ['skill'];
+const RESOURCE_POINT_TYPES = ['miscAbility', 'skill', 'heroic'];
+const WEARABLE_TYPES = ['armor', 'shield', 'accessory'];
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -223,181 +226,158 @@ export class FUStandardActorSheet extends ActorSheet {
 		const effects = [];
 
 		// Iterate through items, allocating to containers
-		for (let i of context.items) {
-			i.img = i.img || CONST.DEFAULT_TOKEN;
+		for (let item of context.items) {
+			item.img = item.img || CONST.DEFAULT_TOKEN;
 
-			if (i.system.quality?.value) {
-				i.quality = i.system.quality.value;
+			if (item.system.quality?.value) {
+				item.quality = item.system.quality.value;
 			}
 
-			i.isMartial = i.system.isMartial?.value ? true : false;
-			i.isOffensive = i.system.isOffensive?.value ? true : false;
-			i.isBehavior = i.system.isBehavior?.value ? true : false;
-			i.equipped = i.system.isEquipped?.value ? true : false;
-			i.equippedSlot = i.system.isEquipped && i.system.isEquipped.slot ? true : false;
-			i.level = i.system.level?.value;
-			i.class = i.system.class?.value;
-			i.mpCost = i.system.mpCost?.value;
-			i.target = i.system.target?.value;
-			i.duration = i.system.duration?.value;
-			i.dLevel = i.system.dLevel?.value;
-			i.clock = i.system.clock?.value;
-			i.progressPerDay = i.system.progressPerDay?.value;
-			i.days = i.system.days?.value;
-			i.cost = i.system.cost?.value;
-			i.discount = i.system.discount?.value;
-			i.potency = i.system.potency?.value;
-			i.area = i.system.area?.value;
-			i.use = i.system.use?.value;
-			i.defect = i.system.isDefect?.value ? true : false;
-			i.defectMod = i.system.use?.value;
-			i.zeroTrigger = i.system.zeroTrigger?.value;
-			i.zeroEffect = i.system.zeroEffect?.value;
-			i.progressCurr = i.system.progress?.current;
-			i.progressStep = i.system.progress?.step;
-			i.progressMax = i.system.progress?.max;
+			item.isMartial = item.system.isMartial?.value ? true : false;
+			item.isOffensive = item.system.isOffensive?.value ? true : false;
+			item.isBehavior = item.system.isBehavior?.value ? true : false;
+			item.equipped = item.system.isEquipped?.value ? true : false;
+			item.equippedSlot = item.system.isEquipped && item.system.isEquipped.slot ? true : false;
+			item.level = item.system.level?.value;
+			item.class = item.system.class?.value;
+			item.mpCost = item.system.mpCost?.value;
+			item.target = item.system.target?.value;
+			item.duration = item.system.duration?.value;
+			item.dLevel = item.system.dLevel?.value;
+			item.clock = item.system.clock?.value;
+			item.progressPerDay = item.system.progressPerDay?.value;
+			item.days = item.system.days?.value;
+			item.cost = item.system.cost?.value;
+			item.discount = item.system.discount?.value;
+			item.potency = item.system.potency?.value;
+			item.area = item.system.area?.value;
+			item.use = item.system.use?.value;
+			item.defect = item.system.isDefect?.value ? true : false;
+			item.defectMod = item.system.use?.value;
+			item.zeroTrigger = item.system.zeroTrigger?.value;
+			item.zeroEffect = item.system.zeroEffect?.value;
+			item.progressCurr = item.system.progress?.current;
+			item.progressStep = item.system.progress?.step;
+			item.progressMax = item.system.progress?.max;
 
-			// Clocks
-			for (let item of context.items) {
-				const relevantTypes = ['zeroPower', 'ritual', 'miscAbility', 'rule'];
-
-				if (relevantTypes.includes(item.type)) {
-					const progressArr = [];
-					const progress = item.system.progress || { current: 0, max: 6 };
-
-					for (let i = 0; i < progress.max; i++) {
-						progressArr.push({
-							id: i + 1,
-							checked: parseInt(progress.current) === i + 1,
-						});
-					}
-					item.progressArr = progressArr.reverse();
+			if (CLOCK_TYPES.includes(item.type)){
+				const progressArr = [];
+				const progress = item.system.progress || { current: 0, max: 6 };
+				for (let i = 0; i < progress.max; i++) {
+					progressArr.push({
+						id: i + 1,
+						checked: parseInt(progress.current) === i + 1,
+					});
 				}
+				item.progressArr = progressArr.reverse();
 			}
-
-			// Resource Points
-			for (let item of context.items) {
-				const relevantTypes = ['miscAbility', 'skill', 'heroic'];
-
-				if (relevantTypes.includes(item.type)) {
-					const rpArr = [];
-					const rp = item.system.rp || { current: 0, max: 6 };
-
-					for (let i = 0; i < rp.max; i++) {
-						rpArr.push({
-							id: i + 1,
-							checked: parseInt(rp.current) === i + 1,
-						});
-					}
-
-					item.rpArr = rpArr.reverse();
+			if (RESOURCE_POINT_TYPES.includes(item.type)){
+				const rpArr = [];
+				const rp = item.system.rp || { current: 0, max: 6 };
+				for (let i = 0; i < rp.max; i++) {
+					rpArr.push({
+						id: i + 1,
+						checked: parseInt(rp.current) === i + 1,
+					});
 				}
+				item.rpArr = rpArr.reverse();
 			}
-
-			// SL Stars
-			for (let item of context.items) {
-				if (item.type === 'skill') {
-					const skillArr = [];
-					const level = item.system.level || { value: 0, max: 8 };
-
-					for (let i = 0; i < level.max; i++) {
-						skillArr.push({
-							id: i + 1,
-							checked: parseInt(level.value) === i + 1,
-						});
-					}
-
-					item.skillArr = skillArr;
+			if (SKILL_TYPES.includes(item.type)){
+				const skillArr = [];
+				const level = item.system.level || { value: 0, max: 8 };
+				for (let i = 0; i < level.max; i++) {
+					skillArr.push({
+						id: i + 1,
+						checked: parseInt(level.value) === i + 1,
+					});
 				}
+				item.skillArr = skillArr;
+			}
+			if (WEARABLE_TYPES.includes(item.type)) {
+				item.def = item.isMartial && item.type === 'armor' ? item.system.def.value : `+${item.system.def.value}`;
+				item.mdef = `+${item.system.mdef.value}`;
+				item.init = item.system.init.value > 0 ? `+${item.system.init.value}` : item.system.init.value;
 			}
 
-			// Enriches description fields for each item within the context.items array
-			for (let item of context.items) {
-				item.enrichedHtml = {
-					description: await TextEditor.enrichHTML(item.system?.description ?? ''),
-					zeroTrigger: await TextEditor.enrichHTML(item.system?.zeroTrigger?.description ?? ''),
-					zeroEffect: await TextEditor.enrichHTML(item.system?.zeroEffect?.description ?? ''),
-				};
-			}
+			item.enrichedHtml = {
+				description: await TextEditor.enrichHTML(item.system?.description ?? ''),
+				zeroTrigger: await TextEditor.enrichHTML(item.system?.zeroTrigger?.description ?? ''),
+				zeroEffect: await TextEditor.enrichHTML(item.system?.zeroEffect?.description ?? ''),
+			};
 
-			if (['armor', 'shield', 'accessory'].includes(i.type)) {
-				i.def = i.isMartial && i.type === 'armor' ? i.system.def.value : `+${i.system.def.value}`;
-				i.mdef = `+${i.system.mdef.value}`;
-				i.init = i.system.init.value > 0 ? `+${i.system.init.value}` : i.system.init.value;
-			}
-			if (i.type === 'basic') {
-				const itemObj = context.actor.items.get(i._id);
+			if (item.type === 'basic') {
+				const itemObj = context.actor.items.get(item._id);
 				const weapData = itemObj.getWeaponDisplayData(this.actor);
-				i.quality = weapData.qualityString;
-				i.detail = weapData.detailString;
-				i.attackString = weapData.attackString;
-				i.damageString = weapData.damageString;
-				basics.push(i);
-			} else if (i.type === 'weapon') {
-				i.unarmedStrike = context.actor.getSingleItemByFuid('unarmed-strike');
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = weapData.qualityString;
+				item.detail = weapData.detailString;
+				item.attackString = weapData.attackString;
+				item.damageString = weapData.damageString;
+				basics.push(item);
+			} else if (item.type === 'weapon') {
+				item.unarmedStrike = context.actor.getSingleItemByFuid('unarmed-strike');
+				const itemObj = context.actor.items.get(item._id);
 				const weapData = itemObj.getWeaponDisplayData(this.actor);
-				i.quality = weapData.qualityString;
-				i.detail = weapData.detailString;
-				i.attackString = weapData.attackString;
-				i.damageString = weapData.damageString;
-				weapons.push(i);
-			} else if (i.type === 'armor') {
-				armor.push(i);
-			} else if (i.type === 'shield') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = weapData.qualityString;
+				item.detail = weapData.detailString;
+				item.attackString = weapData.attackString;
+				item.damageString = weapData.damageString;
+				weapons.push(item);
+			} else if (item.type === 'armor') {
+				armor.push(item);
+			} else if (item.type === 'shield') {
+				const itemObj = context.actor.items.get(item._id);
 				const weapData = itemObj.getWeaponDisplayData(this.actor);
-				i.quality = weapData.qualityString;
-				i.detail = weapData.detailString;
-				i.attackString = weapData.attackString;
-				i.damageString = weapData.damageString;
-				shields.push(i);
-			} else if (i.type === 'accessory') {
-				accessories.push(i);
-			} else if (i.type === 'class') {
-				classes.push(i);
-			} else if (i.type === 'skill') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = weapData.qualityString;
+				item.detail = weapData.detailString;
+				item.attackString = weapData.attackString;
+				item.damageString = weapData.damageString;
+				shields.push(item);
+			} else if (item.type === 'accessory') {
+				accessories.push(item);
+			} else if (item.type === 'class') {
+				classes.push(item);
+			} else if (item.type === 'skill') {
+				const itemObj = context.actor.items.get(item._id);
 				const skillData = itemObj.getSkillDisplayData();
-				i.quality = skillData.qualityString;
-				skills.push(i);
-			} else if (i.type === 'heroic') {
-				heroics.push(i);
-			} else if (i.type === 'spell') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = skillData.qualityString;
+				skills.push(item);
+			} else if (item.type === 'heroic') {
+				heroics.push(item);
+			} else if (item.type === 'spell') {
+				const itemObj = context.actor.items.get(item._id);
 				const spellData = itemObj.getSpellDisplayData(this.actor);
-				i.quality = spellData.qualityString;
-				i.detail = spellData.detailString;
-				i.attackString = spellData.attackString;
-				i.damageString = spellData.damageString;
-				spells.push(i);
-			} else if (i.type === 'miscAbility') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = spellData.qualityString;
+				item.detail = spellData.detailString;
+				item.attackString = spellData.attackString;
+				item.damageString = spellData.damageString;
+				spells.push(item);
+			} else if (item.type === 'miscAbility') {
+				const itemObj = context.actor.items.get(item._id);
 				const skillData = itemObj.getSkillDisplayData();
-				i.quality = skillData.qualityString;
-				abilities.push(i);
-			} else if (i.type === 'rule') {
-				rules.push(i);
-			} else if (i.type === 'behavior') {
-				behaviors.push(i);
-			} else if (i.type === 'consumable') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = skillData.qualityString;
+				abilities.push(item);
+			} else if (item.type === 'rule') {
+				rules.push(item);
+			} else if (item.type === 'behavior') {
+				behaviors.push(item);
+			} else if (item.type === 'consumable') {
+				const itemObj = context.actor.items.get(item._id);
 				const itemData = itemObj.getItemDisplayData();
-				i.quality = itemData.qualityString;
-				consumables.push(i);
-			} else if (i.type === 'treasure') {
-				const itemObj = context.actor.items.get(i._id);
+				item.quality = itemData.qualityString;
+				consumables.push(item);
+			} else if (item.type === 'treasure') {
+				const itemObj = context.actor.items.get(item._id);
 				const itemData = itemObj.getItemDisplayData();
-				i.quality = itemData.qualityString;
-				treasures.push(i);
-			} else if (i.type === 'project') {
-				projects.push(i);
-			} else if (i.type === 'ritual') {
-				rituals.push(i);
-			} else if (i.type === 'zeroPower') {
-				zeroPowers.push(i);
-			} else if (i.type === 'effect') {
-				effects.push(i);
+				item.quality = itemData.qualityString;
+				treasures.push(item);
+			} else if (item.type === 'project') {
+				projects.push(item);
+			} else if (item.type === 'ritual') {
+				rituals.push(item);
+			} else if (item.type === 'zeroPower') {
+				zeroPowers.push(item);
+			} else if (item.type === 'effect') {
+				effects.push(item);
 			}
 		}
 

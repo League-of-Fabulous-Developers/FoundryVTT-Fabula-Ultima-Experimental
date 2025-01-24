@@ -559,3 +559,14 @@ FU.difficultyLevel = {
 	hard: 'FU.Hard',
 	veryHard: 'FU.VeryHard',
 };
+
+/**
+ * @typedef {"self", "single", "multiple", "weapon", "special"} TargetingRule
+ */
+FU.targetingRules = {
+	self: 'FU.Self',
+	single: 'FU.Single',
+	multiple: 'FU.Multiple',
+	weapon: `FU.Weapon`,
+	special: `FU.Special`,
+};

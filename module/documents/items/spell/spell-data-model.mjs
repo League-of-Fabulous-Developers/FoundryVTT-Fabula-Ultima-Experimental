@@ -8,6 +8,9 @@ import { CheckHooks } from '../../../checks/check-hooks.mjs';
 import { CHECK_DETAILS } from '../../../checks/default-section-order.mjs';
 import { ChecksV2 } from '../../../checks/checks-v2.mjs';
 import { CheckConfiguration } from '../../../checks/check-configuration.mjs';
+import { ActionCostDataModel } from '../common/action-cost-data-model.mjs';
+import { TargetingDataModel } from '../common/targeting-data-model.mjs';
+import { CommonSections } from '../../../checks/common-sections.mjs';
 
 /**
  * @param {CheckV2} check
@@ -43,8 +46,10 @@ Hooks.on(CheckHooks.prepareCheck, prepareCheck);
  * @param {CheckResultV2} result
  * @param {FUActor} actor
  * @param {FUItem} [item]
+ * @param {Object} flags
+ * @param {TargetData[]} targets
  */
-function onRenderCheck(data, result, actor, item) {
+function onRenderCheck(data, result, actor, item, flags) {
 	if (item && item.system instanceof SpellDataModel) {
 		data.push(async () => ({
 			order: CHECK_DETAILS,
@@ -52,14 +57,23 @@ function onRenderCheck(data, result, actor, item) {
 			data: {
 				spell: {
 					duration: item.system.duration.value,
-					target: item.system.target.value,
-					mpCost: item.system.mpCost.value,
+					target: item.system.targeting.rule,
+					mpCost: item.system.cost.value,
 					opportunity: item.system.opportunity,
 					summary: item.system.summary.value,
 					description: await TextEditor.enrichHTML(item.system.description),
 				},
 			},
 		}));
+
+		const targets = CheckConfiguration.inspect(result).getTargetsOrDefault();
+
+		// TODO: Find a better way to handle this, as it's needed when using a spell without accuracy
+		if (!item.system.hasRoll.value) {
+			CommonSections.damage(data, actor, item, targets, flags);
+		}
+
+		CommonSections.spendResource(data, actor, item, targets, flags);
 	}
 }
 
@@ -85,11 +99,14 @@ Hooks.on(CheckHooks.renderCheck, onRenderCheck);
  * @property {boolean} isOffensive.value
  * @property {string} opportunity
  * @property {string} source.value
+ * @property {Number} maxTargets.value
  * @property {boolean} rollInfo.useWeapon.hrZero.value
  * @property {ItemAttributesDataModel} rollInfo.attributes
  * @property {number} rollInfo.accuracy.value
  * @property {DamageDataModel} rollInfo.damage
  * @property {boolean} hasRoll.value
+ * @property {ActionCostDataModel} cost
+ * @property {TargetingDataModel} targeting
  */
 export class SpellDataModel extends foundry.abstract.TypeDataModel {
 	static defineSchema() {
@@ -109,9 +126,10 @@ export class SpellDataModel extends foundry.abstract.TypeDataModel {
 			impdamage: new EmbeddedDataField(ImprovisedDamageDataModel, {}),
 			isBehavior: new SchemaField({ value: new BooleanField() }),
 			weight: new SchemaField({ value: new NumberField({ initial: 1, min: 1, integer: true, nullable: false }) }),
-			mpCost: new SchemaField({ value: new StringField() }),
-			maxTargets: new SchemaField({ value: new NumberField({ initial: 0, integer: true, nullable: false }) }),
-			target: new SchemaField({ value: new StringField() }),
+			// Replaced by cost, targeting
+			//mpCost: new SchemaField({ value: new StringField() }),
+			//maxTargets: new SchemaField({ value: new NumberField({ initial: 0, integer: true, nullable: false }) }),
+			//target: new SchemaField({ value: new StringField() }),
 			duration: new SchemaField({ value: new StringField() }),
 			isOffensive: new SchemaField({ value: new BooleanField() }),
 			opportunity: new StringField(),
@@ -125,6 +143,8 @@ export class SpellDataModel extends foundry.abstract.TypeDataModel {
 				damage: new EmbeddedDataField(DamageDataModel, {}),
 			}),
 			hasRoll: new SchemaField({ value: new BooleanField() }),
+			cost: new EmbeddedDataField(ActionCostDataModel, {}),
+			targeting: new EmbeddedDataField(TargetingDataModel, {}),
 		};
 	}
 

@@ -11,24 +11,34 @@ import { CheckConfiguration } from '../../../checks/check-configuration.mjs';
 import { ChooseWeaponDialog } from '../skill/choose-weapon-dialog.mjs';
 import { CHECK_DETAILS } from '../../../checks/default-section-order.mjs';
 import { CommonSections } from '../../../checks/common-sections.mjs';
+import { ActionCostDataModel } from '../common/action-cost-data-model.mjs';
+import { TargetingDataModel } from '../common/targeting-data-model.mjs';
 
-Hooks.on(CheckHooks.renderCheck, (sections, check, actor, item) => {
-	if (check.type === 'accuracy' && item?.system instanceof MiscAbilityDataModel) {
-		const weapon = fromUuidSync(check.additionalData[ABILITY_USED_WEAPON]);
-		if (check.critical) {
-			CommonSections.opportunity(sections, item.system.opportunity, CHECK_DETAILS);
+Hooks.on(CheckHooks.renderCheck, (sections, check, actor, item, flags) => {
+	if (item?.system instanceof MiscAbilityDataModel) {
+		// Optional accuracy
+		let weapon;
+		if (check.type === 'accuracy') {
+			weapon = fromUuidSync(check.additionalData[ABILITY_USED_WEAPON]);
+			if (check.critical) {
+				CommonSections.opportunity(sections, item.system.opportunity, CHECK_DETAILS);
+			}
 		}
 		CommonSections.description(sections, item.system.description, item.system.summary.value, CHECK_DETAILS);
-		sections.push(() => ({
-			partial: 'systems/projectfu/templates/chat/partials/chat-ability-weapon.hbs',
-			data: {
-				weapon,
-			},
-			order: CHECK_DETAILS,
-		}));
-	}
+		if (weapon) {
+			sections.push(() => ({
+				partial: 'systems/projectfu/templates/chat/partials/chat-ability-weapon.hbs',
+				data: {
+					weapon,
+				},
+				order: CHECK_DETAILS,
+			}));
+		}
 
-	if (check.type === 'attribute' && check.additionalData[ABILITY_USED_WEAPON]) {
+		// Optional resource
+		const targets = CheckConfiguration.inspect(check).getTargetsOrDefault();
+		CommonSections.spendResource(sections, actor, item, targets, flags);
+	} else if (check.type === 'attribute' && check.additionalData[ABILITY_USED_WEAPON]) {
 		const ability = fromUuidSync(check.additionalData[ABILITY_USED_WEAPON]);
 		CommonSections.itemFlavor(sections, ability);
 
@@ -63,6 +73,8 @@ const ABILITY_USED_WEAPON = 'AbilityUsedWeapon';
  * @property {string} source.value
  * @property {boolean} isOffensive.value
  * @property {boolean} hasRoll.value
+ * @property {ActionCostDataModel} cost
+ * @property {TargetingDataModel} targeting
  */
 export class MiscAbilityDataModel extends foundry.abstract.TypeDataModel {
 	static {
@@ -109,6 +121,8 @@ export class MiscAbilityDataModel extends foundry.abstract.TypeDataModel {
 			rp: new EmbeddedDataField(ProgressDataModel, {}),
 			source: new SchemaField({ value: new StringField() }),
 			hasRoll: new SchemaField({ value: new BooleanField() }),
+			cost: new EmbeddedDataField(ActionCostDataModel, {}),
+			targeting: new EmbeddedDataField(TargetingDataModel, {}),
 		};
 	}
 

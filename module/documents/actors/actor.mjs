@@ -157,10 +157,6 @@ export class FUActor extends Actor {
 	}
 
 	async _onUpdate(changed, options, userId) {
-		if (options.damageTaken) {
-			this.showFloatyText(options.damageTaken);
-		}
-
 		const { hp } = this.system?.resources || {};
 
 		if (hp && userId === game.userId) {
@@ -181,7 +177,7 @@ export class FUActor extends Actor {
 		super._onUpdate(changed, options, userId);
 	}
 
-	async showFloatyText(input) {
+	async showFloatyText(input, fill) {
 		if (!canvas.scene) {
 			return;
 		}
@@ -194,7 +190,7 @@ export class FUActor extends Actor {
 				{ x: token.x + gridSize / 2, y: token.y + gridSize - 20 },
 				Math.abs(input),
 				{
-					fill: input < 0 ? 'lightgreen' : 'white',
+					fill: fill ?? (input < 0 ? 'lightgreen' : 'white'),
 					fontSize: 32,
 					stroke: 0x000000,
 					strokeThickness: 4,
@@ -208,7 +204,7 @@ export class FUActor extends Actor {
 				{ x: token.x + gridSize / 2, y: token.y + gridSize - 20 },
 				input,
 				{
-					fill: 'white',
+					fill: fill ?? 'white',
 					fontSize: 32,
 					stroke: 0x000000,
 					strokeThickness: 4,

@@ -1,5 +1,5 @@
 import { SETTINGS } from '../settings.js';
-import { SYSTEM } from '../helpers/config.mjs';
+import { FU, SYSTEM } from '../helpers/config.mjs';
 import { Flags } from '../helpers/flags.mjs';
 import { CheckHooks } from './check-hooks.mjs';
 
@@ -37,14 +37,6 @@ const initHrZero = (hrZero) => (check) => {
  * @property {BonusDamage[]} modifiers
  * @property {number} [modifierTotal]
  * @property {number} [total]
- */
-
-/**
- * @typedef TargetData
- * @property {string} name
- * @property {string} uuid
- * @property {string} link
- * @property {number} [difficulty]
  */
 
 /**
@@ -284,6 +276,9 @@ const inspect = (check) => {
 	return new CheckInspector(check);
 };
 
+/**
+ * @description Given a {@link CheckResultV2} object, provides additional information from it
+ */
 class CheckInspector {
 	#check;
 
@@ -331,6 +326,74 @@ class CheckInspector {
 	 */
 	getTargets() {
 		return this.#check.additionalData[TARGETS] ? foundry.utils.duplicate(this.#check.additionalData[TARGETS]) : null;
+	}
+
+	/**
+	 * @return {TargetData[]}
+	 */
+	getTargetsOrDefault() {
+		return this.getTargets() || [];
+	}
+
+	/**
+	 * @remarks Used for templating
+	 */
+	getAccuracyData() {
+		const _check = this.getCheck();
+		const accuracyData = {
+			result: {
+				attr1: _check.primary.result,
+				attr2: _check.secondary.result,
+				die1: _check.primary.dice,
+				die2: _check.secondary.dice,
+				modifier: _check.modifierTotal,
+				total: _check.result,
+				crit: _check.critical,
+				fumble: _check.fumble,
+			},
+			check: {
+				attr1: {
+					attribute: _check.primary.attribute,
+				},
+				attr2: {
+					attribute: _check.secondary.attribute,
+				},
+			},
+			modifiers: _check.modifiers,
+			additionalData: _check.additionalData,
+		};
+		return accuracyData;
+	}
+
+	/**
+	 * @remarks Used for templating
+	 */
+	getDamageData() {
+		const _check = this.getCheck();
+		const damage = this.getDamage();
+		const hrZero = this.getHrZero();
+		let damageData = null;
+		if (damage) {
+			damageData = {
+				result: {
+					attr1: _check.primary.result,
+					attr2: _check.secondary.result,
+				},
+				damage: {
+					hrZero: hrZero,
+					bonus: damage.modifierTotal,
+					total: damage.total,
+					type: damage.type,
+				},
+				translation: {
+					damageTypes: FU.damageTypes,
+					damageIcon: FU.affIcon,
+				},
+				modifiers: damage.modifiers,
+			};
+		}
+
+		return damageData;
 	}
 }
 

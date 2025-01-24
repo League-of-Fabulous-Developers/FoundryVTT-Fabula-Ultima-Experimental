@@ -1,4 +1,11 @@
-import { CHECK_FLAVOR } from './default-section-order.mjs';
+import { CHECK_FLAVOR, CHECK_RESULT } from './default-section-order.mjs';
+import { FUActor } from '../documents/actors/actor.mjs';
+import { TargetAction, Targeting } from '../helpers/targeting.mjs';
+import { ResourcePipeline } from '../pipelines/resource-pipeline.mjs';
+import { FU } from '../helpers/config.mjs';
+import { Flags } from '../helpers/flags.mjs';
+import { Pipeline } from '../pipelines/pipeline.mjs';
+import { ConsumableDataModel } from '../documents/items/consumable/consumable-data-model.mjs';
 
 /**
  * @param {CheckRenderData} sections
@@ -131,6 +138,137 @@ const opportunity = (sections, opportunity, order) => {
 	}
 };
 
+/**
+ * @description Adds a damage section to the message that lists the targets and provides buttons to apply damage to them
+ * @param {CheckRenderData} sections
+ * @param {FUActor} actor
+ * @param {FUItem} item
+ * @param {TargetData[]} targets
+ * @param {Object} flags
+ * @param accuracyData
+ * @param damageData
+ */
+const damage = (sections, actor, item, targets, flags, accuracyData, damageData) => {
+	const isTargeted = targets?.length > 0 || !Targeting.STRICT_TARGETING;
+	if (isTargeted) {
+		sections.push(async function () {
+			let actions = [];
+			actions.push(Targeting.defaultAction);
+			let selectedActions = [];
+
+			if (accuracyData && damageData) {
+				actions.push(
+					new TargetAction('applyDamage', 'fa-heart-crack', 'FU.ChatApplyDamageTooltip', {
+						accuracy: accuracyData,
+						damage: damageData,
+					}),
+				);
+
+				selectedActions.push(
+					new TargetAction('applyDamageSelected', 'fa-heart-crack', 'FU.ChatApplyDamageTooltip', {
+						accuracy: accuracyData,
+						damage: damageData,
+					}),
+				);
+			}
+
+			let rule;
+			if (item.system.targeting) {
+				rule = item.system.targeting.rule ?? Targeting.rule.multiple;
+				targets = await Targeting.filterTargetsByRule(actor, item, targets);
+			} else {
+				rule = targets?.length > 1 ? Targeting.rule.multiple : Targeting.rule.single;
+			}
+
+			return {
+				order: CHECK_RESULT,
+				partial: 'systems/projectfu/templates/chat/partials/chat-targets.hbs',
+				data: {
+					name: item.name,
+					actor: actor.uuid,
+					item: item.uuid,
+					rule: rule,
+					targets: targets,
+					actions: actions,
+					selectedActions: selectedActions,
+				},
+				flags: Pipeline.initializedFlags(Flags.ChatMessage.Targets, true),
+			};
+		});
+
+		if (game.dice3d) {
+			Hooks.once('diceSoNiceRollComplete', () => {
+				for (const target of targets) {
+					showFloatyText(target, target.result === 'hit' ? 'FU.Hit' : 'FU.Miss');
+				}
+			});
+		} else {
+			for (const target of targets) {
+				showFloatyText(target, target.result === 'hit' ? 'FU.Hit' : 'FU.Miss');
+			}
+		}
+	}
+};
+
+/**
+ * @param {TargetData} targetData
+ * @param {String} localizedText Text what will be localized by the system
+ * @returns {Promise<void>}
+ */
+async function showFloatyText(targetData, localizedText) {
+	const actor = await fromUuid(targetData.uuid);
+	if (actor instanceof FUActor) {
+		actor.showFloatyText(game.i18n.localize(localizedText));
+	}
+}
+
+/**
+ * @param {CheckRenderData} sections
+ * @param {FUActor} actor
+ * @param {FUItem} item
+ * @param {TargetData[]} targets
+ * @param {Object} flags
+ */
+const spendResource = (sections, actor, item, targets, flags) => {
+	/**
+	 * @type ResourceExpense
+	 */
+	let expense;
+
+	// If using the newer cost data model
+	if (item.system.cost) {
+		if (item.system.cost.amount === 0) {
+			return;
+		}
+		expense = ResourcePipeline.calculateExpense(item, targets);
+		if (expense.amount === 0) {
+			return;
+		}
+	}
+	// Support for consumables
+	else if (item.system instanceof ConsumableDataModel) {
+		expense = {
+			resource: 'ip',
+			amount: item.system.ipCost.value,
+		};
+	}
+
+	if (expense) {
+		Pipeline.toggleFlag(flags, Flags.ChatMessage.ResourceLoss);
+		sections.push({
+			order: CHECK_RESULT,
+			partial: 'systems/projectfu/templates/chat/partials/chat-item-spend-resource.hbs',
+			data: {
+				name: item.name,
+				actor: actor.uuid,
+				item: item.uuid,
+				expense: expense,
+				icon: FU.resourceIcons[expense.resource],
+			},
+		});
+	}
+};
+
 export const CommonSections = Object.freeze({
 	description,
 	clock,
@@ -139,4 +277,6 @@ export const CommonSections = Object.freeze({
 	resource,
 	itemFlavor,
 	opportunity,
+	damage,
+	spendResource,
 });

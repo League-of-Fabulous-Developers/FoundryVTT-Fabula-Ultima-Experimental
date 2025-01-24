@@ -237,8 +237,8 @@ export class FUStandardActorSheet extends ActorSheet {
 			i.equippedSlot = i.system.isEquipped && i.system.isEquipped.slot ? true : false;
 			i.level = i.system.level?.value;
 			i.class = i.system.class?.value;
-			i.mpCost = i.system.mpCost?.value;
-			i.target = i.system.target?.value;
+			i.mpCost = i.system.cost?.amount;
+			i.target = i.system.targeting?.rule;
 			i.duration = i.system.duration?.value;
 			i.dLevel = i.system.dLevel?.value;
 			i.clock = i.system.clock?.value;

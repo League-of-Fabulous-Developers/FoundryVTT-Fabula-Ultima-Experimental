@@ -106,12 +106,13 @@ const processCheck = (check, actor, item) => {};
 
 /**
  * @callback RenderCheckHook
- * Hook called to determine how to render the results
+ * @description Hook called to determine how to render the results
  * @param {CheckRenderData} sections
  * @param {CheckResultV2} check
  * @param {FUActor} actor
  * @param {FUItem} [item]
  * @param {Object} additionalFlags
+ * @param {TargetData[]} targets
  */
 
 /**

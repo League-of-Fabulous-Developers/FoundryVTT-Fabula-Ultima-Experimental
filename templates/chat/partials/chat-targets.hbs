@@ -1,0 +1,42 @@
+{{#if targets}}
+    <div style="clear: both"></div>
+    <header class="title-desc chat-header flexrow">
+        <h2>
+            {{localize "FU.Target"}}
+            {{#if (gt targets.length 1)}}
+                <span>: {{localize rule}}({{targets.length}})</span>
+            {{/if}}
+        </h2>
+    </header>
+    <section class="targets">
+        {{#each targets as |target|}}
+            <span class="flexrow">
+                <span class="target total {{#if (eq target.result "hit")}}hit{{else if (eq target.result "miss")}}miss{{else}}default{{/if}} flexrow">
+                    <!-- Label -->
+                    <div style="padding: 2px;">{{target.name}}</div>
+                    <!-- Accuracy Information -->
+                    {{#if (eq target.result "hit")}}
+                        <div class="endcap gap-5" style="flex: 0 1 auto;">
+                        <span class="{{target.result}}">{{localize 'FU.Hit'}}</span>
+                    </div>
+                    {{/if}}
+                </span>
+                <!-- Actions -->
+                {{#each ../actions as |action|}}
+                    <span class="fu-tags" style="flex: 0 1 auto;padding: 2px;">
+                        <a data-action="{{name}}" data-id="{{target.uuid}}" data-fields={{fields}} data-tooltip="{{localize tooltip}}">
+                            <span class='fu-tag button flex-group-center' style="font-size: 1rem;"><i class="icon fas {{icon}}"></i></span>
+                        </a>
+                    </span>
+                {{/each}}
+            </span>
+        {{/each}}
+    </section>
+{{/if}}
+{{#each selectedActions as |action|}}
+    <div class="fu-tags flexrow gap-5">
+        <a data-action="{{name}}" data-fields={{fields}} data-tooltip="{{localize tooltip}}">
+            <span class='fu-tag button flex-group-center gap-5' style="width: 100%;white-space: nowrap;">{{localize 'FU.ChatApplySelected'}}<i class="icon fas {{icon}}"></i></span>
+        </a>
+    </div>
+{{/each}}

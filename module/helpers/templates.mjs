@@ -48,6 +48,8 @@ export const preloadHandlebarsTemplates = async function () {
 		// Item partials
 		'systems/projectfu/templates/item/partials/item-progress-clock.hbs',
 		'systems/projectfu/templates/item/partials/item-resource-points.hbs',
+		'systems/projectfu/templates/item/partials/item-action-cost.hbs',
+		'systems/projectfu/templates/item/partials/item-targeting.hbs',
 		'systems/projectfu/templates/item/partials/item-controls.hbs',
 		'systems/projectfu/templates/item/partials/item-header.hbs',
 		'systems/projectfu/templates/item/partials/item-progress-header.hbs',
@@ -81,6 +83,7 @@ export const preloadHandlebarsTemplates = async function () {
 		'systems/projectfu/templates/chat/partials/chat-item-tags.hbs',
 		'systems/projectfu/templates/chat/partials/chat-spell-details.hbs',
 		'systems/projectfu/templates/chat/partials/chat-weapon-details.hbs',
+		'systems/projectfu/templates/chat/partials/chat-item-spend-resource.hbs',
 		'systems/projectfu/templates/chat/partials/chat-check-push.hbs',
 		'systems/projectfu/templates/chat/partials/chat-check-reroll.hbs',
 		'systems/projectfu/templates/chat/partials/chat-basic-attack-details.hbs',
@@ -95,6 +98,7 @@ export const preloadHandlebarsTemplates = async function () {
 		'systems/projectfu/templates/chat/partials/chat-opposed-check-details.hbs',
 		'systems/projectfu/templates/chat/partials/chat-clock-details.hbs',
 		'systems/projectfu/templates/chat/partials/chat-resource-details.hbs',
+		'systems/projectfu/templates/chat/partials/chat-targets.hbs',
 
 		// UI Components
 		'systems/projectfu/templates/ui/combat-tracker.hbs',

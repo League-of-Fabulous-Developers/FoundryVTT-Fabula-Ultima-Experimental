@@ -42,7 +42,7 @@ export async function getPrioritizedUserTargeted() {
 		if (game.user.character) {
 			targets.push(game.user.character);
 		} else {
-			ui.notifications.warn('FU.ChatApplyEffectNoActorsTargeted', { localize: true });
+			ui.notifications.warn('FU.ChatApplyNoTargetSelected', { localize: true });
 		}
 	}
 	return targets || [];

@@ -153,7 +153,7 @@ export class FUItem extends Item {
 
 		const qualText = this.system.quality?.value || '';
 		const detailString = [attackString, damageString].filter(Boolean).join('⬥');
-		const qualityString = [capitalizeFirst(this.system.mpCost.value), capitalizeFirst(this.system.target.value), capitalizeFirst(this.system.duration.value), qualText].filter(Boolean).join(' ⬥ ');
+		const qualityString = [capitalizeFirst(this.system.cost.amount), capitalizeFirst(this.system.targeting.rule), capitalizeFirst(this.system.duration.value), qualText].filter(Boolean).join(' ⬥ ');
 
 		return {
 			attackString,
@@ -883,7 +883,7 @@ export class FUItem extends Item {
 	 * @return {Promise<chatMessage>}
 	 */
 	async rollSpell(hrZero) {
-		const { rollInfo, opportunity, description, summary, mpCost, target, duration, defense } = this.system;
+		const { rollInfo, opportunity, description, summary, cost, targeting, duration, defense } = this.system;
 		let defenseAbbr = !defense ? game.i18n.localize('FU.MagicDefenseAbbr') : defenseAbbr;
 		let checkDamage = undefined;
 		if (rollInfo?.damage?.hasDamage?.value) {
@@ -902,8 +902,8 @@ export class FUItem extends Item {
 			img: this.img,
 			id: this.id,
 			duration: duration.value,
-			target: target.value,
-			mpCost: mpCost.value,
+			target: targeting.rule,
+			mpCost: cost.amount,
 			defense: defenseAbbr,
 			opportunity: opportunity,
 			summary: summary.value,

@@ -45,6 +45,9 @@ export class FUItemSheet extends ItemSheet {
 
 	/* -------------------------------------------- */
 
+	/**
+	 * @remarks Used for rendering the sheets
+	 */
 	/** @override */
 	async getData() {
 		// Retrieve base data structure.
@@ -78,7 +81,7 @@ export class FUItemSheet extends ItemSheet {
 			effect.enrichedDescription = effect.description ? await TextEditor.enrichHTML(effect.description) : '';
 		}
 
-		//Add CONFIG data required
+		// Add CONFIG data required
 		context.attrAbbr = CONFIG.FU.attributeAbbreviations;
 		context.damageTypes = CONFIG.FU.damageTypes;
 		context.wpnType = CONFIG.FU.weaponTypes;
@@ -89,6 +92,8 @@ export class FUItemSheet extends ItemSheet {
 		context.consumableType = CONFIG.FU.consumableType;
 		context.treasureType = CONFIG.FU.treasureType;
 		context.defenses = CONFIG.FU.defenses;
+		context.resAbbr = CONFIG.FU.resourcesAbbr;
+		context.targetingRules = CONFIG.FU.targetingRules;
 
 		// Add the actor object to context for easier access
 		context.actor = actorData;

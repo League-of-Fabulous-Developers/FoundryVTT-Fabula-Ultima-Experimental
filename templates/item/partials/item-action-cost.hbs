@@ -1,0 +1,22 @@
+<fieldset class="title-fieldset desc resource-content">
+    <legend class="resource-label-full">
+        <label class="resource-label-m"><i class="fas fa-hat-wizard"></i>{{localize 'FU.Resource'}}</label>
+    </legend>
+
+    <div class="grid grid-2col">
+
+        <div class="resource-content flexcol flex-group-center">
+            <label for="system.cost.resource" class="resource-label-m">{{localize 'FU.Resource'}} </label>
+            <select name="system.cost.resource" class="resource-inputs select-dropdown-m">
+                {{selectOptions resAbbr selected=system.cost.resource localize=true}}
+            </select>
+        </div>
+        <div class="resource-content flexcol flex-group-center">
+            <label class="resource-label-m">{{localize 'FU.Amount'}}</label>
+            <input type="number" name="system.cost.amount"
+                   value="{{ system.cost.amount }}" class="resource-inputs"
+                   data-dtype="Number" />
+        </div>
+
+    </div>
+</fieldset>

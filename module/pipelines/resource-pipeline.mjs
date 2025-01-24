@@ -1,5 +1,7 @@
-import { PipelineRequest } from './pipeline.mjs';
-import { FU } from '../helpers/config.mjs';
+import { Pipeline, PipelineRequest } from './pipeline.mjs';
+import { FU, SYSTEM } from '../helpers/config.mjs';
+import { InlineSourceInfo } from '../helpers/inline-helper.mjs';
+import { Flags } from '../helpers/flags.mjs';
 
 /**
  * @property {Number} amount
@@ -16,12 +18,25 @@ export class ResourceRequest extends PipelineRequest {
 		this.uncapped = uncapped;
 	}
 
-	get isValue() {
+	/**
+	 * @returns {boolean} True if the resource is FP, EXP or ZENIT
+	 */
+	get isMetaCurrency() {
 		return this.resourceType === 'fp' || this.resourceType === 'exp' || this.resourceType === 'zenit';
 	}
 
+	/**
+	 * @returns {string} The key to the resource within the actor's data model
+	 */
 	get attributeKey() {
 		return `resources.${this.resourceType}`;
+	}
+
+	/**
+	 * @returns {string} The full path to the accessor for resource in an actor's data model
+	 */
+	get attributePath() {
+		return `resources.${this.resourceType}.value`;
 	}
 
 	get resourceLabel() {
@@ -48,6 +63,32 @@ const recoveryMessages = {
 };
 
 /**
+ * @param {FUActor} actor
+ * @param {String} resourcePath
+ * @returns {number|number}
+ */
+function getResourceValue(actor, resourcePath) {
+	return parseInt(foundry.utils.getProperty(actor.system, resourcePath), 10) || 0;
+}
+
+/**
+ * @param {FUActor} actor
+ * @param {String} attributePath
+ * @param {Number} amountRecovered
+ * @returns {Promise<*>
+ */
+function createUpdateForRecovery(actor, attributePath, amountRecovered) {
+	const currentValue = getResourceValue(actor, attributePath);
+	const newValue = Math.floor(currentValue + amountRecovered);
+
+	// Update the actor's resource directly
+	const updateData = {
+		[`system.${attributePath}`]: newValue,
+	};
+	return actor.update(updateData);
+}
+
+/**
  * @param {ResourceRequest} request
  * @return {Promise<Awaited<unknown>[]>}
  */
@@ -61,31 +102,23 @@ async function processRecovery(request) {
 		const uncappedRecoveryValue = amountRecovered + attr.value;
 		const updates = [];
 
-		// Handle uncapped recovery logic
-		if (request.uncapped === true && uncappedRecoveryValue > (attr.max || 0) && !request.isValue) {
-			// Overheal recovery
-			const newValue = Object.defineProperties({}, Object.getOwnPropertyDescriptors(attr)); // Clone attribute
-			newValue.value = uncappedRecoveryValue;
-			updates.push(actor.modifyTokenAttribute(request.attributeKey, newValue, false, false));
-		} else if (!request.isValue) {
+		if (request.isMetaCurrency) {
+			updates.push(createUpdateForRecovery(actor, request.attributePath, amountRecovered));
+		} else {
+			// Overheal recovery (uncapped)
+			if (request.uncapped === true && uncappedRecoveryValue > (attr.max || 0)) {
+				// Clone attribute
+				const newValue = Object.defineProperties({}, Object.getOwnPropertyDescriptors(attr));
+				newValue.value = uncappedRecoveryValue;
+				updates.push(actor.modifyTokenAttribute(request.attributeKey, newValue, false, false));
+			}
 			// Normal recovery
-			updates.push(actor.modifyTokenAttribute(request.attributeKey, amountRecovered, true));
+			else {
+				updates.push(actor.modifyTokenAttribute(request.attributeKey, amountRecovered, true));
+			}
 		}
 
-		// Handle specific cases for fp and exp
-		if (request.isValue) {
-			const currentValue = parseInt(foundry.utils.getProperty(actor.system, `${request.attributeKey}.value`), 10) || 0;
-			const newValue = Math.floor(currentValue) + Math.floor(amountRecovered);
-
-			// Update the actor's resource directly
-			const updateData = {
-				[`system.${request.attributeKey}.value`]: Math.floor(newValue),
-			};
-			// TODO: Verify this was indeed not needed to be done here
-			//await actor.update(updateData);
-			updates.push(actor.update(updateData));
-		}
-
+		actor.showFloatyText(`${amountRecovered} ${request.resourceType.toUpperCase()}`, `lightgreen`);
 		updates.push(
 			ChatMessage.create({
 				speaker: ChatMessage.getSpeaker({ actor }),
@@ -122,28 +155,31 @@ async function processLoss(request) {
 
 	const updates = [];
 	for (const actor of request.targets) {
-		if (request.isValue) {
-			const currentValue = foundry.utils.getProperty(actor.system, `${request.attributeKey}.value`) || 0;
-			const newValue = Math.floor(currentValue) + Math.floor(amountLost);
-
+		if (request.isMetaCurrency) {
+			const currentValue = foundry.utils.getProperty(actor.system, request.attributePath) || 0;
+			const newValue = Math.floor(currentValue + amountLost);
 			// Update the actor's resource directly
 			const updateData = {};
-			updateData[`system.${request.attributeKey}.value`] = Math.floor(newValue);
-			//await actor.update(updateData);
+			updateData[`system.${request.attributePath}`] = newValue;
 			updates.push(actor.update(updateData));
 		} else {
-			updates.push(actor.modifyTokenAttribute(`${request.attributeKey}`, amountLost, true));
+			updates.push(actor.modifyTokenAttribute(request.attributeKey, amountLost, true));
 		}
 
+		actor.showFloatyText(`${amountLost} ${request.resourceType.toUpperCase()}`, `lightyellow`);
 		updates.push(
 			ChatMessage.create({
 				speaker: ChatMessage.getSpeaker({ actor }),
 				flavor: flavor,
+				flags: Pipeline.initializedFlags(Flags.ChatMessage.ResourceLoss, true),
 				content: await renderTemplate('systems/projectfu/templates/chat/chat-apply-loss.hbs', {
 					message: 'FU.ChatResourceLoss',
 					actor: actor.name,
 					amount: request.amount,
-					resource: request.resourceLabel,
+					uuid: actor.uuid,
+					resource: request.resourceType,
+					key: request.attributeKey,
+					resourceLabel: request.resourceLabel,
 					from: request.sourceInfo.name,
 				}),
 			}),
@@ -152,7 +188,76 @@ async function processLoss(request) {
 	return Promise.all(updates);
 }
 
+/**
+ * @typedef ResourceExpense
+ * @property {String} resource
+ * @property {Number} amount
+ */
+
+/**
+ * @param {FUItem} item
+ * @param {TargetData[]} targets
+ * @return {ResourceExpense}
+ */
+function calculateExpense(item, targets) {
+	let amount = item.system.cost.amount;
+	let resource = item.system.cost.resource;
+	let maxTargets = item.system.targeting.max;
+
+	if (maxTargets > 1) {
+		if (targets.length === 0) {
+			console.warn(`Wrong number of targets given (${targets.length}) for calculating resource expense. Using default of 1.`);
+		} else {
+			amount = amount * targets.length;
+		}
+	}
+
+	return {
+		resource: resource,
+		amount: amount,
+	};
+}
+
+/**
+ * @param {Document} document
+ * @param {jQuery} jQuery
+ */
+function onRenderChatMessage(document, jQuery) {
+	if (!document.getFlag(SYSTEM, Flags.ChatMessage.ResourceLoss)) {
+		return;
+	}
+
+	/**
+	 * @param {Event} event
+	 * @param dataset
+	 * @param {FUActor[]} targets
+	 * @returns {Promise<Awaited<*>[]>}
+	 */
+	const applyResourceLoss = async (event, dataset) => {
+		const sourceInfo = new InlineSourceInfo(dataset.name, dataset.actor, dataset.item);
+		const actor = sourceInfo.resolveActor();
+		const request = new ResourceRequest(sourceInfo, [actor], dataset.resource, dataset.amount);
+		return ResourcePipeline.processLoss(request);
+	};
+
+	Pipeline.handleClickRevert(jQuery, 'revertResourceLoss', async (dataset) => {
+		const actor = fromUuidSync(dataset.uuid);
+		const amount = dataset.amount;
+		const attributeKey = dataset.key;
+		const updates = [];
+		updates.push(actor.modifyTokenAttribute(attributeKey, amount, true));
+		actor.showFloatyText(`${amount} ${dataset.resource.toUpperCase()}`, `lightgreen`);
+		return Promise.all(updates);
+	});
+
+	jQuery.find(`a[data-action=applyResourceLoss]`).click(function (event) {
+		return Pipeline.handleClick(event, this.dataset, null, applyResourceLoss);
+	});
+}
+
 export const ResourcePipeline = {
 	processRecovery,
 	processLoss,
+	onRenderChatMessage,
+	calculateExpense,
 };

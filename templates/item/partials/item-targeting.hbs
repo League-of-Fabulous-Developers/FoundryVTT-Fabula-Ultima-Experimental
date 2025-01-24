@@ -1,0 +1,22 @@
+<fieldset class="title-fieldset desc resource-content">
+    <legend class="resource-label-full">
+        <label class="resource-label-m"><i class="fas fa-bullseye"></i>{{localize 'FU.Target'}}</label>
+    </legend>
+
+    <div class="grid grid-2col">
+        <div class="resource-content flexcol flex-group-center">
+            <label for="system.targeting.rule" class="resource-label-m">{{localize 'FU.Rule'}} </label>
+            <select name="system.targeting.rule" class="resource-inputs select-dropdown-m">
+                {{selectOptions FU.targetingRules selected=system.targeting.rule localize=true}}
+            </select>
+        </div>
+        {{#if (eq system.targeting.rule "multiple")}}
+            <div class="resource-content flexcol flex-group-center">
+                <label class="resource-label-m">{{localize 'FU.MaxTargets'}}</label>
+                <input type="number" name="system.targeting.max"
+                       value="{{ system.targeting.max }}" class="resource-inputs"
+                       data-dtype="Number" />
+            </div>
+        {{/if}}
+    </div>
+</fieldset>

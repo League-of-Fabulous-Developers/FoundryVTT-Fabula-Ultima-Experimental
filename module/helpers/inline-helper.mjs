@@ -18,11 +18,30 @@ export class InlineSourceInfo {
 	}
 
 	/**
+	 * @param {FUActor} actor
+	 * @param {FUItem} item
+	 * @return {InlineSourceInfo}
+	 */
+	static fromInstance(actor, item) {
+		return new InlineSourceInfo(item.name, actor.uuid, item.uuid);
+	}
+
+	/**
 	 * @returns {FUActor|null}
 	 */
 	resolveActor() {
 		if (this.actorUuid) {
 			return fromUuidSync(this.actorUuid);
+		}
+		return null;
+	}
+
+	/**
+	 * @returns {FUItem|null}
+	 */
+	resolveItem() {
+		if (this.itemUuid) {
+			return fromUuidSync(this.itemUuid);
 		}
 		return null;
 	}

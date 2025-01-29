@@ -69,6 +69,7 @@ import { DamagePipeline } from './pipelines/damage-pipeline.mjs';
 import { ResourcePipeline } from './pipelines/resource-pipeline.mjs';
 import { InlineWeapon } from './helpers/inline-weapon.mjs';
 import { Targeting } from './helpers/targeting.mjs';
+import { ActionTest } from './ui/action-test.mjs';
 
 globalThis.projectfu = {
 	ClassFeatureDataModel,
@@ -278,6 +279,8 @@ Hooks.once('init', async () => {
 	SystemControls.initialize();
 
 	PlayerListEnhancements.initialize();
+
+	ActionTest.initialize();
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();

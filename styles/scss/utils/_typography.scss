@@ -728,3 +728,7 @@ $font-sizes: (10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 28, 32, 36, 48, 64, 80);
 	pointer-events: none;
 	opacity: 0.5;
 }
+
+.action-hidden {
+	display: none;
+}

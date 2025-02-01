@@ -5,10 +5,10 @@ import { FUItem } from '../documents/items/item.mjs';
 
 /**
  * @description Contains contextual objects used for evaluating expressions
- * @property {FUActor} actor
+ * @property {FUActor} actor The source of the action
  * @property {FUItem} item
  * @property {FUActor[]} targets
- * @remarks Do not serialize this class, as it references full objects. Instead store their uuids
+ * @remarks Do not serialize this class, as it references full objects. Instead, store their uuids
  * and resolve them with the static constructor
  */
 export class ExpressionContext {
@@ -67,6 +67,25 @@ export class ExpressionContext {
 			ui.notifications.warn('FU.ChatEvaluateAmountNoItem', { localize: true });
 			throw new Error(`No reference to an item provided while evaluating expression "${match}"`);
 		}
+	}
+
+	/**
+	 * @description Resolves the actor or the target with the highest level
+	 * @returns {FUActor}
+	 */
+	resolveActorOrHighestLevelTarget() {
+		if (this.actor) {
+			return this.actor;
+		} else {
+			if (this.targets.length > 0) {
+				return this.targets.reduce((prev, current) => {
+					return prev.system.level.value > current.system.level.value ? prev : current;
+				});
+			}
+		}
+
+		ui.notifications.warn('FU.ChatEvaluateAmountNoActor', { localize: true });
+		throw new Error(`No reference to an actor or targets provided while evaluating expression"`);
 	}
 }
 
@@ -219,7 +238,7 @@ function evaluateMacros(expression, context) {
 				return skill.system.level.value;
 			}
 			case 'step':
-				return stepByLevel(context.actor, splitArgs[0], splitArgs[1], splitArgs[2]);
+				return stepByLevel(context, splitArgs[0], splitArgs[1], splitArgs[2]);
 			default:
 				throw new Error(`Unsupported macro ${name}`);
 		}
@@ -229,12 +248,13 @@ function evaluateMacros(expression, context) {
 
 /**
  * @description Given 3 amounts, picks the one for this characters' level
- * @param {FUActor} actor
+ * @param {ExpressionContext} context
  * @param {Number} first
  * @param {Number} second
  * @param {Number} third
  */
-function stepByLevel(actor, first, second, third) {
+function stepByLevel(context, first, second, third) {
+	const actor = context.resolveActorOrHighestLevelTarget();
 	const tier = ImprovisedEffect.getCharacterTier(actor.system.level.value);
 	switch (tier) {
 		case 0:

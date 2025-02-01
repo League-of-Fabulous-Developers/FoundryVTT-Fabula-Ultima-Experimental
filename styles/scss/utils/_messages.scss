@@ -981,3 +981,25 @@
 		transform: translateY(1px);
 	}
 }
+
+table {
+	border-top: 1px solid var(--pfu-color-app-control-border);
+	border-bottom: 1px solid var(--pfu-color-app-control-border);
+
+	& thead {
+		background: var(--pfu-color-app-control-fill);
+		color: var(--pfu-color-app-control-content);
+		border-bottom: 1px solid var(--pfu-color-app-control-border);
+	}
+	& caption {
+		caption-side: top;
+		font-weight: bold;
+		color: inherit;
+	}
+
+	& th,
+	td {
+		text-align: justify;
+		padding-left: 2px;
+	}
+}

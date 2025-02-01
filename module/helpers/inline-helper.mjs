@@ -27,6 +27,25 @@ export class InlineSourceInfo {
 	}
 
 	/**
+	 * @param {String} actorUuid
+	 * @param {String} itemUuid
+	 * @return {InlineSourceInfo}
+	 */
+	static resolveName(actorUuid, itemUuid) {
+		const resolvedModel = fromUuidSync(itemUuid ?? actorUuid);
+		return new InlineSourceInfo(resolvedModel.name, actorUuid, itemUuid);
+	}
+
+	/**
+	 * @description Used for reconstruction during deserialization
+	 * @param {Object} obj An object containing the properties of this class
+	 * @returns {InlineSourceInfo}
+	 */
+	static fromObject(obj) {
+		return new InlineSourceInfo(obj.name, obj.actorUuid, obj.itemUuid);
+	}
+
+	/**
 	 * @returns {FUActor|null}
 	 */
 	resolveActor() {
@@ -58,6 +77,8 @@ export class InlineSourceInfo {
 		}
 		return null;
 	}
+
+	static none = Object.freeze(new InlineSourceInfo('Unknown'));
 }
 
 /**
@@ -164,6 +185,16 @@ function capitalize(word) {
 	return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
+function nicifyString(str) {
+	return str
+		.replace(/([a-z])([A-Z])/g, '$1 $2')
+		.replace(/[_.]+/g, ' ')
+		.trim()
+		.split(/\s+/)
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
+
 export const InlineHelper = {
 	determineSource,
 	appendAmountToAnchor,
@@ -171,4 +202,5 @@ export const InlineHelper = {
 	toBase64,
 	fromBase64,
 	capitalize,
+	nicifyString,
 };

@@ -98,7 +98,8 @@ async function processRecovery(request) {
 
 	const updates = [];
 	for (const actor of request.targets) {
-		const amountRecovered = Math.max(0, request.amount + (actor.system.bonuses.incomingRecovery[request.resourceType] || 0));
+		const recoveryBonus = actor.system.bonuses.incomingRecovery[request.resourceType] || 0;
+		const amountRecovered = Math.max(0, Math.floor(request.amount + recoveryBonus));
 		const attr = foundry.utils.getProperty(actor.system, request.attributeKey);
 		const uncappedRecoveryValue = amountRecovered + attr.value;
 		const updates = [];
@@ -124,11 +125,15 @@ async function processRecovery(request) {
 			ChatMessage.create({
 				speaker: ChatMessage.getSpeaker({ actor }),
 				flavor: flavor,
+				flags: Pipeline.initializedFlags(Flags.ChatMessage.ResourceGain, true),
 				content: await renderTemplate('systems/projectfu/templates/chat/chat-apply-recovery.hbs', {
 					message: recoveryMessages[request.resourceType],
 					actor: actor.name,
+					uuid: actor.uuid,
 					amount: amountRecovered,
-					resource: request.resourceLabel,
+					key: request.attributeKey,
+					resource: request.resourceType,
+					resourceLabel: request.resourceLabel,
 					from: request.sourceInfo.name,
 				}),
 			}),
@@ -151,14 +156,14 @@ const lossFlavor = {
  * @return {Promise<Awaited<unknown>[]>}
  */
 async function processLoss(request) {
-	const amountLost = -request.amount;
+	const amountLost = -Math.floor(request.amount);
 	const flavor = game.i18n.localize(lossFlavor[request.resourceType]);
 
 	const updates = [];
 	for (const actor of request.targets) {
 		if (request.isMetaCurrency) {
 			const currentValue = foundry.utils.getProperty(actor.system, request.attributePath) || 0;
-			const newValue = Math.floor(currentValue + amountLost);
+			const newValue = currentValue + amountLost;
 			// Update the actor's resource directly
 			const updateData = {};
 			updateData[`system.${request.attributePath}`] = newValue;
@@ -176,10 +181,10 @@ async function processLoss(request) {
 				content: await renderTemplate('systems/projectfu/templates/chat/chat-apply-loss.hbs', {
 					message: 'FU.ChatResourceLoss',
 					actor: actor.name,
-					amount: request.amount,
+					amount: Math.abs(amountLost),
 					uuid: actor.uuid,
-					resource: request.resourceType,
 					key: request.attributeKey,
+					resource: request.resourceType,
 					resourceLabel: request.resourceLabel,
 					from: request.sourceInfo.name,
 				}),
@@ -224,7 +229,7 @@ function calculateExpense(item, targets) {
  * @param {jQuery} jQuery
  */
 function onRenderChatMessage(document, jQuery) {
-	if (!document.getFlag(SYSTEM, Flags.ChatMessage.ResourceLoss)) {
+	if (!document.getFlag(SYSTEM, Flags.ChatMessage.ResourceLoss) && !document.getFlag(SYSTEM, Flags.ChatMessage.ResourceGain)) {
 		return;
 	}
 
@@ -248,6 +253,16 @@ function onRenderChatMessage(document, jQuery) {
 		const updates = [];
 		updates.push(actor.modifyTokenAttribute(attributeKey, amount, true));
 		actor.showFloatyText(`${amount} ${dataset.resource.toUpperCase()}`, `lightgreen`);
+		return Promise.all(updates);
+	});
+
+	Pipeline.handleClickRevert(document, jQuery, 'revertResourceGain', async (dataset) => {
+		const actor = fromUuidSync(dataset.uuid);
+		const amount = dataset.amount;
+		const attributeKey = dataset.key;
+		const updates = [];
+		updates.push(actor.modifyTokenAttribute(attributeKey, -amount, true));
+		actor.showFloatyText(`${amount} ${dataset.resource.toUpperCase()}`, `red`);
 		return Promise.all(updates);
 	});
 

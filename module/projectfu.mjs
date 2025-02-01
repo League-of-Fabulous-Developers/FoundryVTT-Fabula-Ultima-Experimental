@@ -231,7 +231,7 @@ Hooks.once('init', async () => {
 	});
 
 	Hooks.on('getChatLogEntryContext', addRollContextMenuEntries);
-	Hooks.on('renderChatMessage', DamagePipeline.onRenderChatMessage);
+	DamagePipeline.initialize();
 	Hooks.on(`renderChatMessage`, ResourcePipeline.onRenderChatMessage);
 	Hooks.on(`renderChatMessage`, Targeting.onRenderChatMessage);
 

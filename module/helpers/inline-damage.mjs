@@ -1,6 +1,6 @@
 import { FU } from './config.mjs';
 import { targetHandler } from './target-handler.mjs';
-import { InlineHelper } from './inline-helper.mjs';
+import { InlineHelper, InlineSourceInfo } from './inline-helper.mjs';
 import { ExpressionContext, Expressions } from '../expressions/expressions.mjs';
 import { DamagePipeline, DamageRequest } from '../pipelines/damage-pipeline.mjs';
 
@@ -79,7 +79,7 @@ function activateListeners(document, html) {
 			const sourceInfo = InlineHelper.determineSource(document, this);
 			const data = {
 				type: INLINE_DAMAGE,
-				sourceInfo: sourceInfo,
+				_sourceInfo: sourceInfo,
 				damageType: this.dataset.type,
 				amount: this.dataset.amount,
 			};
@@ -89,11 +89,14 @@ function activateListeners(document, html) {
 }
 
 // TODO: Implement
-function onDropActor(actor, sheet, { type, damageType, amount, sourceInfo, ignore }) {
+function onDropActor(actor, sheet, { type, damageType, amount, _sourceInfo, ignore }) {
 	if (type === INLINE_DAMAGE) {
+		// Need to rebuild the class after it was deserialized
+		const sourceInfo = InlineSourceInfo.fromObject(_sourceInfo);
 		const context = ExpressionContext.fromUuid(sourceInfo.actorUuid, sourceInfo.itemUuid, [actor]);
 		const _amount = Expressions.evaluate(amount, context);
 		const baseDamageInfo = { type: damageType, total: _amount, modifierTotal: 0 };
+
 		const request = new DamageRequest(sourceInfo, [actor], baseDamageInfo);
 		DamagePipeline.process(request);
 		return false;

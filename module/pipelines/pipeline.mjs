@@ -24,7 +24,7 @@ export class PipelineRequest {
 
 /**
  * @property {InlineSourceInfo} sourceInfo
- * @property {FUActor} sourceActor
+ * @property {FUActor} sourceActor The actor whose action triggered the pipeline
  * @property {FUActor} actor The actor the pipeline is modifying
  * @property {Set<String>} traits
  * @property {Event | null} event
@@ -34,7 +34,7 @@ export class PipelineContext {
 	constructor(request, actor) {
 		Object.assign(this, request);
 		this.actor = actor;
-		this.sourceActor = this.sourceInfo.resolveActor();
+		this.sourceActor = request.sourceInfo.resolveActor();
 	}
 }
 
@@ -126,6 +126,18 @@ function toggleFlag(flags, key) {
 }
 
 /**
+ * @param {Map} flags
+ * @param {String} key
+ * @param {*} value
+ * @returns {Map}
+ * @remarks Documented in {@link Flags}
+ */
+function setFlag(flags, key, value) {
+	(flags[SYSTEM] ??= {})[key] ??= value;
+	return flags;
+}
+
+/**
  * @description Constructs an initialized flags object to be assigned in a ChatMessage
  * @param {String} key
  * @param {*} value
@@ -142,5 +154,6 @@ export const Pipeline = {
 	handleClick,
 	handleClickRevert,
 	toggleFlag,
+	setFlag,
 	initializedFlags,
 };

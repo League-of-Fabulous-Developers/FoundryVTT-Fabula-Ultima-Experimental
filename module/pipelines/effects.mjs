@@ -151,12 +151,36 @@ export function prepareActiveEffectCategories(effects) {
 export async function toggleStatusEffect(actor, statusEffectId, source = undefined) {
 	const existing = actor.effects.filter((effect) => isActiveEffectForStatusEffectId(effect, statusEffectId));
 	if (existing.length > 0) {
-		await Promise.all(existing.map((e) => e.delete()));
+		await Promise.all(
+			existing.map((e) => {
+				Hooks.call(
+					FUHooks.STATUS_EVENT,
+					/** @type StatusEvent **/
+					{
+						actor: actor,
+						token: actor.resolveToken(),
+						status: statusEffectId,
+						enabled: false,
+					},
+				);
+				return e.delete();
+			}),
+		);
 		return false;
 	} else {
 		const statusEffect = CONFIG.statusEffects.find((e) => e.id === statusEffectId);
 		if (statusEffect) {
 			await ActiveEffect.create({ ...statusEffect, statuses: [statusEffectId], origin: source }, { parent: actor });
+			Hooks.call(
+				FUHooks.STATUS_EVENT,
+				/** @type StatusEvent **/
+				{
+					actor: actor,
+					token: actor.resolveToken(),
+					status: statusEffectId,
+					enabled: true,
+				},
+			);
 		}
 		return true;
 	}

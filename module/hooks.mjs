@@ -42,6 +42,95 @@ export const FUHooks = {
 	ROLL_STUDY: 'studyRoll',
 	/**
 	 * @description Invoked when there's a change in the combat state
+	 * @example callback(event)
+	 * @remarks Uses {@link CombatEvent}
 	 */
-	COMBAT_EVENT: 'projectfu.combat',
+	COMBAT_EVENT: 'projectfu.events.combat',
+	/**
+	 * @description Invoked after damage has been applied to an actor
+	 * @example callback(event)
+	 * @remarks Uses {@link DamageEvent}
+	 */
+	DAMAGE_EVENT: 'projectfu.events.damage',
+	/**
+	 * @description Invoked after resource gain has been applied to an actor
+	 * @example callback(event)
+	 * @remarks Uses {@link GainEvent}
+	 */
+	GAIN_EVENT: 'projectfu.events.gain',
+	/**
+	 * @description Dispatched after resource loss has been applied to an actor
+	 * @example callback(event)
+	 * @remarks Uses {@link LossEvent}.
+	 */
+	LOSS_EVENT: 'projectfu.events.loss',
+	/**
+	 * @description Dispatched after an actor enters or exits crisis.
+	 * @example callback(event)
+	 * @remarks Uses {@link CrisisEvent}. This can happen after a {@link DAMAGE_EVENT}.
+	 */
+	CRISIS_EVENT: 'projectfu.events.crisis',
+	/**
+	 * @description Invoked after an actor is reduced to 0 hit points
+	 * @example callback(event)
+	 * @remarks Uses {@link DefeatEvent}. This can happen after a {@link DAMAGE_EVENT}.
+	 */
+	DEFEAT_EVENT: 'projectfu.events.defeat',
+	/**
+	 * @description Dispatched after an actor has a status effect applied on them.
+	 * @example callback(event)
+	 * @remarks Uses {@link StatusEvent}. It happens AFTER the status effect has been applied.
+	 */
+	STATUS_EVENT: 'projectfu.events.status',
 };
+
+/**
+ * @description Dispatched when an actor suffers damage
+ * @typedef DamageEvent
+ * @property {FU.damageTypes} type
+ * @property {Number} amount
+ * @property {FUActor} actor
+ * @property {Token} token
+ * @property {FUActor} sourceActor
+ * @property {Token} sourceToken
+ * @property {Set<String>} traits
+ */
+
+/**
+ * @description Dispatched when an actor recovers resources (such as HP, MP)
+ * @typedef GainEvent
+ * @property {FU.resources} resource
+ * @property {Number} amount
+ * @property {FUActor} actor
+ * @property {Token} token
+ */
+
+/**
+ * @description Dispatched when an actor loses resources (such as HP, MP)
+ * @typedef LossEvent
+ * @property {FU.resources} resource
+ * @property {Number} amount
+ * @property {FUActor} actor
+ * @property {Token} token
+ */
+
+/**
+ * @description Dispatched when an actor enters crisis
+ * @typedef CrisisEvent
+ * @property {FUActor} actor
+ */
+
+/**
+ * @description Dispatched when an actor is reduced to 0 HP
+ * @typedef DefeatEvent
+ * @property {FUActor} actor
+ */
+
+/**
+ * @description Dispatched when an actor has a status toggled.
+ * @typedef StatusEvent
+ * @property {FUActor} actor
+ * @property {Token} token
+ * @property {String} status The id of the status effect
+ * @property {String} enabled Whether the effect is enabled
+ */

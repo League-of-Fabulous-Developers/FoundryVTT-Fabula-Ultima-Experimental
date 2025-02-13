@@ -29,6 +29,7 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 		check.additionalData.hasDamage = item.system.rollInfo.damage.hasDamage.value;
 		const configurer = MagicCheck.configure(check)
 			.setDamage(item.system.rollInfo.damage.type.value, item.system.rollInfo.damage.value)
+			.addTraits(item.system.damage.type)
 			.setTargetedDefense('mdef')
 			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value);
 

@@ -7,6 +7,7 @@ const TARGETS = 'targets';
 const TARGETED_DEFENSE = 'targetedDefense';
 const DIFFICULTY = 'difficulty';
 const DAMAGE = 'damage';
+const TRAITS = 'traits';
 
 /**
  *
@@ -67,6 +68,9 @@ const configure = (check) => {
 };
 
 class CheckConfigurer {
+	/**
+	 * @type {CheckV2, CheckResultV2}
+	 */
 	#check;
 
 	constructor(check) {
@@ -103,12 +107,40 @@ class CheckConfigurer {
 	}
 
 	/**
+	 * @param {String[]} traits
+	 * @returns {CheckConfigurer}
+	 */
+	addTraits(...traits) {
+		if (!this.#check.additionalData[TRAITS]) {
+			this.#check.additionalData[TRAITS] = [];
+		}
+		traits.forEach((t) => this.#check.additionalData[TRAITS].push(t));
+		return this;
+	}
+
+	/**
 	 * @param {FUItem} item
 	 * @param {FUActor} actor
 	 * @return {CheckConfigurer}
 	 */
 	addItemAccuracyBonuses(item, actor) {
 		return this.addModelAccuracyBonuses(item.system, actor);
+	}
+
+	/**
+	 * @description Add the common traits of a weapon
+	 * @param {WeaponDataModel} system
+	 */
+	addWeaponTraits(system) {
+		return this.addTraits(system.category.value, system.damageType.value, system.type.value);
+	}
+
+	/**
+	 * @description Add the common traits of an NPC attack
+	 * @param {BasicItemDataModel} system
+	 */
+	addAttackTraits(system) {
+		return this.addTraits(system.type.value, system.damageType.value);
 	}
 
 	/**
@@ -330,8 +362,12 @@ const inspect = (check) => {
 
 /**
  * @description Given a {@link CheckResultV2} object, provides additional information from it
+ * @remarks Provides read-only access, to be used after {@linkcode CheckConfigurer}
  */
 class CheckInspector {
+	/**
+	 * @type CheckResultV2
+	 */
 	#check;
 
 	constructor(check) {
@@ -371,6 +407,13 @@ class CheckInspector {
 	 */
 	getDifficulty() {
 		return this.#check.additionalData[DIFFICULTY] ?? null;
+	}
+
+	/**
+	 * @return {String[]|null}
+	 */
+	getTraits() {
+		return this.#check.additionalData[TRAITS] ?? null;
 	}
 
 	/**
@@ -438,6 +481,7 @@ class CheckInspector {
 					total: damage.total,
 					type: damage.type,
 					extra: damage.extra,
+					traits: this.getTraits(),
 				},
 				translation: {
 					damageTypes: FU.damageTypes,

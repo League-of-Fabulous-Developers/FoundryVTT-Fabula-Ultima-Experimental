@@ -486,6 +486,10 @@ Handlebars.registerHelper('inArray', function (item, array, options) {
 	}
 });
 
+Handlebars.registerHelper('inSet', function (item, set) {
+	return set.has(item);
+});
+
 Handlebars.registerHelper('formatResource', function (resourceValue, resourceMax, resourceName) {
 	// Convert value to a string to split into 3 digits
 	const valueString = resourceValue.toString().padStart(3, '0');

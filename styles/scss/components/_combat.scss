@@ -226,10 +226,6 @@
 						border: none;
 					}
 
-					&.crisis {
-						color: $color-hp-crisis;
-					}
-
 					&.full-height {
 						height: 100%;
 					}
@@ -269,6 +265,22 @@
 
 					&:hover {
 						animation-play-state: paused;
+					}
+				}
+			}
+
+			&.crisis {
+				.combat-info {
+					.combat-name {
+						color: $color-hp-crisis;
+					}
+				}
+			}
+
+			&.ko {
+				.combat-info {
+					.combat-name {
+						text-decoration: line-through $color-hp-ko;
 					}
 				}
 			}
@@ -913,10 +925,6 @@
 						border: none;
 						cursor: pointer;
 						font-size: 1.625rem;
-					}
-
-					&.crisis {
-						color: $color-hp-crisis;
 					}
 
 					&.full-height {

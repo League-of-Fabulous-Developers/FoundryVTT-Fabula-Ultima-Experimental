@@ -35,30 +35,19 @@
     <div class="window-header" style="display: none;">Combat HUD</div>
     <div class="faction-list npcs {{#if isCompact }}compact{{/if}}" style="{{ additionalStyle }}">
         {{#each npcs}}
-            <div class="combat-row" data-type="npc" data-actor-id="{{ this.actor.id }}" data-combatant-id="{{ this.id }}"
+            <div class="combat-row {{#if (inSet "crisis" this.actor.statuses)}}crisis{{/if}} {{#if (inSet "ko" this.actor.statuses)}}ko{{/if}}" data-type="npc" data-actor-id="{{ this.actor.id }}" data-combatant-id="{{ this.id }}"
                  data-token-id="{{ this.token.id }}" data-order="{{ this.order }}"
                  {{#if (getGameSetting "optionCombatHudReordering") }}draggable="true"{{/if}}>
                 <img class="token-image" src="{{this.img}}" alt="{{name}}" />
                 <div class="combat-info">
-                    {{#if (crisis this.actor.system.resources.hp.value this.actor.system.resources.hp.max)}}
-                        <div class="combat-name crisis {{#unless this.hasEffects}}full-height{{/unless}}">
-                            <h2 class="token-name">
-                                {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
-                                    <span class="combat-order">{{ this.order }}</span>.&nbsp;
-                                {{/if}}
-                                {{ name }}
-                            </h2>
-                        </div>
-                    {{else}}
-                        <div class="combat-name {{#unless this.hasEffects}}full-height{{/unless}}">
-                            <h2>
-                                {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
-                                    <span class="combat-order">{{ this.order }}</span>.&nbsp;
-                                {{/if}}
-                                {{ name }}
-                            </h2>
-                        </div>
-                    {{/if}}
+                    <div class="combat-name {{#unless this.hasEffects}}full-height{{/unless}}">
+                        <h2 class="token-name">
+                            {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
+                                <span class="combat-order">{{ this.order }}</span>.&nbsp;
+                            {{/if}}
+                            {{ name }}
+                        </h2>
+                    </div>
                     {{#if this.hasEffects}}
                         <div class="combat-effects">
                             {{#if this.shouldEffectsMarquee}}
@@ -91,30 +80,19 @@
     </div>
     <div class="faction-list characters {{#if isCompact }}compact{{/if}}" style="{{ additionalStyle }}">
         {{#each characters}}
-            <div class="combat-row {{ this.rowClass }}" data-type="character" data-actor-id="{{ this.actor.id }}" data-combatant-id="{{ this.id }}"
+            <div class="combat-row {{ this.rowClass }} {{#if (inSet "crisis" this.actor.statuses)}}crisis{{/if}} {{#if (inSet "ko" this.actor.statuses)}}ko{{/if}}" data-type="character" data-actor-id="{{ this.actor.id }}" data-combatant-id="{{ this.id }}"
                  data-token-id="{{ this.token.id }}" data-order="{{ this.order }}"
                  {{#if (getGameSetting "optionCombatHudReordering") }}draggable="true"{{/if}}>
                 <img class="token-image" src="{{this.img}}" alt="{{name}}" />
                 <div class="combat-info">
-                    {{#if (crisis this.actor.system.resources.hp.value this.actor.system.resources.hp.max)}}
-                        <div class="combat-name crisis {{#unless this.hasEffects}}full-height{{/unless}}">
-                            <h2>
-                                {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
-                                    <span class="combat-order">{{ this.order }}</span>.&nbsp;
-                                {{/if}}
-                                {{ name }}
-                            </h2>
-                        </div>
-                    {{else}}
-                        <div class="combat-name {{#unless this.hasEffects}}full-height{{/unless}}">
-                            <h2>
-                                {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
-                                    <span class="combat-order">{{ this.order }}</span>.&nbsp;
-                                {{/if}}
-                                {{ name }}
-                            </h2>
-                        </div>
-                    {{/if}}
+                    <div class="combat-name {{#unless this.hasEffects}}full-height{{/unless}}">
+                        <h2>
+                            {{#if (getGameSetting "optionCombatHudShowOrderNumbers")}}
+                                <span class="combat-order">{{ this.order }}</span>.&nbsp;
+                            {{/if}}
+                            {{ name }}
+                        </h2>
+                    </div>
                     {{#if this.hasEffects}}
                         <div class="combat-effects">
                             {{#if this.shouldEffectsMarquee}}

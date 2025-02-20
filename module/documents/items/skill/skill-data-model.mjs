@@ -13,6 +13,7 @@ import { UseWeaponDataModelV2 } from '../common/use-weapon-data-model-v2.mjs';
 import { ItemAttributesDataModelV2 } from '../common/item-attributes-data-model-v2.mjs';
 import { DamageDataModelV2 } from '../common/damage-data-model-v2.mjs';
 import { SkillMigrations } from './skill-migrations.mjs';
+import { Traits } from '../../../pipelines/traits.mjs';
 
 const weaponUsedBySkill = 'weaponUsedBySkill';
 const skillForAttributeCheck = 'skillForAttributeCheck';
@@ -247,6 +248,8 @@ export class SkillDataModel extends foundry.abstract.TypeDataModel {
 
 			const inspect = CheckConfiguration.inspect(weaponCheck);
 			const configure = CheckConfiguration.configure(check);
+
+			configure.addTraits(Traits.Skill).addItemName(item);
 
 			if (this.accuracy) {
 				check.modifiers.push({

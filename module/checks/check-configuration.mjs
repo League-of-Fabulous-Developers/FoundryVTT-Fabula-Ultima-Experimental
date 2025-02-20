@@ -107,15 +107,22 @@ class CheckConfigurer {
 	}
 
 	/**
-	 * @param {String[]} traits
+	 * @param {String[]|String} traits
 	 * @returns {CheckConfigurer}
 	 */
 	addTraits(...traits) {
 		if (!this.#check.additionalData[TRAITS]) {
 			this.#check.additionalData[TRAITS] = [];
 		}
-		traits.forEach((t) => this.#check.additionalData[TRAITS].push(t));
+		traits.forEach((t) => this.#check.additionalData[TRAITS].push(t.toLowerCase()));
 		return this;
+	}
+
+	/**
+	 * @param {FUItem} item Adds a special-case trait that denotes the name of the item
+	 */
+	addItemName(item) {
+		return this.addTraits(`name:${item.name}`);
 	}
 
 	/**

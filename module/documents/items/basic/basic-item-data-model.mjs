@@ -23,6 +23,7 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 		AccuracyCheck.configure(check)
 			.setDamage(item.system.damageType.value, item.system.damage.value)
 			.setTargetedDefense(item.system.defense)
+			.addItemName(item)
 			.addAttackTraits(item.system)
 			.addItemAccuracyBonuses(item, actor)
 			.addItemDamageBonuses(item, actor)

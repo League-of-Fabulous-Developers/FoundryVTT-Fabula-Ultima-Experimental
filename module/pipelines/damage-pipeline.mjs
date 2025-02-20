@@ -11,6 +11,7 @@ import { ApplyTargetHookData, BeforeApplyHookData } from './legacy-hook-data.mjs
 import { ResourcePipeline, ResourceRequest } from './resource-pipeline.mjs';
 import { ChatMessageHelper } from '../helpers/chat-message-helper.mjs';
 import { ExpressionContext, Expressions } from '../expressions/expressions.mjs';
+import { Traits } from './traits.mjs';
 
 /**
  * @typedef {"incomingDamage.all", "incomingDamage.air", "incomingDamage.bolt", "incomingDamage.dark", "incomingDamage.earth", "incomingDamage.fire", "incomingDamage.ice", "incomingDamage.light", "incomingDamage.poison"} DamagePipelineStepIncomingDamage
@@ -112,12 +113,6 @@ export class DamageRequest extends PipelineRequest {
  * @property {String} effect
  * @property {String} total
  */
-
-// TODO: Decide whether to define in config.mjs. Though it's probably fine if they are all in english
-const Traits = {
-	IgnoreResistance: 'ignore-resistance',
-	IgnoreImmunity: 'ignore-immunity',
-};
 
 /**
  * @property {Number} affinity The index of the affinity

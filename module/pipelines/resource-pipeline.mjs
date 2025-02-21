@@ -3,6 +3,7 @@ import { FU, SYSTEM } from '../helpers/config.mjs';
 import { InlineSourceInfo } from '../helpers/inline-helper.mjs';
 import { Flags } from '../helpers/flags.mjs';
 import { Targeting } from '../helpers/targeting.mjs';
+import { FUHooks } from '../hooks.mjs';
 
 /**
  * @property {Number} amount
@@ -120,6 +121,16 @@ async function processRecovery(request) {
 			}
 		}
 
+		// Dispatch event
+		/** @type GainEvent  **/
+		const gainEvent = {
+			amount: amountRecovered,
+			resource: request.resourceType,
+			actor: actor,
+			token: actor.resolveToken(),
+		};
+		Hooks.call(FUHooks.GAIN_EVENT, gainEvent);
+
 		actor.showFloatyText(`${amountRecovered} ${request.resourceType.toUpperCase()}`, `lightgreen`);
 		updates.push(
 			ChatMessage.create({
@@ -171,6 +182,16 @@ async function processLoss(request) {
 		} else {
 			updates.push(actor.modifyTokenAttribute(request.attributeKey, amountLost, true));
 		}
+
+		// Dispatch event
+		/** @type LossEvent  **/
+		const lossEvent = {
+			amount: amountLost,
+			resource: request.resourceType,
+			actor: actor,
+			token: actor.resolveToken(),
+		};
+		Hooks.call(FUHooks.LOSS_EVENT, lossEvent);
 
 		actor.showFloatyText(`${amountLost} ${request.resourceType.toUpperCase()}`, `lightyellow`);
 		updates.push(

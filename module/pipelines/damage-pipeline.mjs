@@ -11,6 +11,7 @@ import { ApplyTargetHookData, BeforeApplyHookData } from './legacy-hook-data.mjs
 import { ResourcePipeline, ResourceRequest } from './resource-pipeline.mjs';
 import { ChatMessageHelper } from '../helpers/chat-message-helper.mjs';
 import { ExpressionContext, Expressions } from '../expressions/expressions.mjs';
+import { Traits } from './traits.mjs';
 
 /**
  * @typedef {"incomingDamage.all", "incomingDamage.air", "incomingDamage.bolt", "incomingDamage.dark", "incomingDamage.earth", "incomingDamage.fire", "incomingDamage.ice", "incomingDamage.light", "incomingDamage.poison"} DamagePipelineStepIncomingDamage
@@ -112,12 +113,6 @@ export class DamageRequest extends PipelineRequest {
  * @property {String} effect
  * @property {String} total
  */
-
-// TODO: Decide whether to define in config.mjs. Though it's probably fine if they are all in english
-const Traits = {
-	IgnoreResistance: 'ignore-resistance',
-	IgnoreImmunity: 'ignore-immunity',
-};
 
 /**
  * @property {Number} affinity The index of the affinity
@@ -378,6 +373,20 @@ async function process(request) {
 		const damageTaken = -context.result;
 		updates.push(actor.modifyTokenAttribute('resources.hp', damageTaken, true));
 		actor.showFloatyText(`${damageTaken} HP`, `red`);
+
+		// Dispatch event
+		/** @type DamageEvent  **/
+		const damageEvent = {
+			amount: context.result,
+			type: request.damageType,
+			actor: actor,
+			token: actor.resolveToken(),
+			sourceActor: context.sourceActor,
+			sourceToken: context.sourceActor ? context.sourceActor.resolveToken() : null,
+			traits: context.traits,
+		};
+		Hooks.call(FUHooks.DAMAGE_EVENT, damageEvent);
+
 		// Chat message
 		const affinityString = await renderTemplate('systems/projectfu/templates/chat/partials/inline-damage-icon.hbs', {
 			damage: context.result,
@@ -429,9 +438,13 @@ function onRenderChatMessage(message, jQuery) {
 	let baseDamageInfo;
 	/** @type InlineSourceInfo **/
 	let sourceInfo = null;
+	let traits = [];
 
 	if (ChecksV2.isCheck(message)) {
-		const damage = CheckConfiguration.inspect(message).getDamage();
+		const inspector = CheckConfiguration.inspect(message);
+		const damage = inspector.getDamage();
+		traits = inspector.getTraits();
+
 		if (damage) {
 			sourceInfo = getSourceInfoFromChatMessage(message);
 			baseDamageInfo = damage;
@@ -443,7 +456,7 @@ function onRenderChatMessage(message, jQuery) {
 			baseDamageInfo,
 			targets,
 			async (extraDamageInfo) => {
-				await handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo);
+				await handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo, traits);
 				disabled = false;
 			},
 			() => {
@@ -453,7 +466,7 @@ function onRenderChatMessage(message, jQuery) {
 	};
 
 	const applyDefaultDamage = async (event, targets) => {
-		return handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, {});
+		return handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, {}, traits);
 	};
 
 	const handleClick = async (event, getTargetsFunction, action, alternateAction) => {
@@ -482,7 +495,7 @@ function onRenderChatMessage(message, jQuery) {
 				baseDamageInfo,
 				targets,
 				(extraDamageInfo) => {
-					handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo);
+					handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo, traits);
 					disabled = false;
 				},
 				() => {
@@ -515,11 +528,13 @@ function onRenderChatMessage(message, jQuery) {
  * @param {InlineSourceInfo} sourceInfo
  * @param {import('../helpers/typedefs.mjs').BaseDamageInfo} baseDamageInfo
  * @param {import('./damage-customizer.mjs').ExtraDamageInfo} extraDamageInfo
+ * @param {String[]} traits
  * @returns {void}
  */
-async function handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo) {
+async function handleDamageApplication(event, targets, sourceInfo, baseDamageInfo, extraDamageInfo, traits) {
 	const request = new DamageRequest(sourceInfo, targets, baseDamageInfo, extraDamageInfo);
 	request.event = event;
+	traits.forEach((t) => request.traits.add(t));
 	if (event.shiftKey) {
 		request.traits.add(Traits.IgnoreResistance);
 		if (event.ctrlKey || event.metaKey) {

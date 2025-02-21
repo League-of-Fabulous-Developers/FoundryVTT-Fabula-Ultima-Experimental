@@ -28,6 +28,7 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 		AccuracyCheck.configure(check)
 			.setDamage(item.system.damageType.value, item.system.damage.value)
 			.addItemAccuracyBonuses(item, actor)
+			.addWeaponTraits(item.system)
 			.setTargetedDefense(item.system.defense)
 			.addItemDamageBonuses(item, actor)
 			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value);

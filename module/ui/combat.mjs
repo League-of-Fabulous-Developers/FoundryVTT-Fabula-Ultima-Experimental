@@ -12,8 +12,13 @@ export const HOSTILE = 'hostile';
  * @description Dispatched by the combat during its lifetime
  * @property {FU.combatEvent} type The type of event
  * @property {Number} round The round the event is taking place in
+ * @property {Combatant} combatant The current combatant taking a turn, which can be null.
  * @property {FUActor|*} actor The actor involved in the event, which can be null.
+ * @property {Token|*} token The token of the combatant taking a turn, which can be null.
+ * @property {Combatant[]} combatants The actors involved in the combat
  * @property {FUActor[]} actors The actors involved in the combat
+ * @remarks Depending on the {@linkcode type} of the event, some properties will be assigned and others will not.
+ * Combat and round events will include all combatants, whereas turn events are relegated to the single combatant.
  */
 export class CombatEvent {
 	constructor(type, round) {
@@ -21,14 +26,26 @@ export class CombatEvent {
 		this.round = round;
 	}
 
-	forActors(actors) {
-		this.actors = actors;
+	forCombatants(combatants) {
+		this.combatants = combatants;
 		return this;
 	}
 
-	forActor(actor) {
-		this.actor = actor;
+	forCombatant(combatant) {
+		this.combatant = combatant;
 		return this;
+	}
+
+	get token() {
+		return this.combatant.token;
+	}
+
+	get actor() {
+		return this.combatant.actor;
+	}
+
+	get actors() {
+		return Array.from(this.combatants.map((c) => c.actor));
 	}
 }
 
@@ -174,9 +191,8 @@ export class FUCombat extends Combat {
 
 		await this.setFirstTurn(firstTurnFaction);
 		await this.setCurrentTurn(firstTurnFaction);
-		const actors = this.getActors();
-		console.debug(`Combat started for ${actors.length} actors`);
-		Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.startOfCombat, this.round).forActors(actors));
+		console.debug(`Combat started for ${this.combatants.length} combatants`);
+		Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.startOfCombat, this.round).forCombatants(this.combatants));
 		return super.startCombat();
 	}
 
@@ -186,9 +202,8 @@ export class FUCombat extends Combat {
 	async endCombat() {
 		const end = await super.endCombat();
 		if (end) {
-			const actors = this.getActors();
-			console.debug(`Combat ended for ${actors.length} actors`);
-			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfCombat, this.round).forActors(actors));
+			console.debug(`Combat ended for ${this.combatants.length} combatants`);
+			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfCombat, this.round).forCombatants(this.combatants));
 		}
 	}
 
@@ -266,7 +281,7 @@ export class FUCombat extends Combat {
 			this.current.tokenId = combatant?.tokenId || null;
 
 			console.debug(`Combat turn started for ${combatant.actor.uuid}`);
-			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.startOfTurn, this.round).forActor(combatant.actor));
+			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.startOfTurn, this.round).forCombatant(combatant));
 
 			// FROM BASE
 			// Determine the turn order and the current turn
@@ -310,8 +325,7 @@ export class FUCombat extends Combat {
 			await this.setTurnsTaken(flag);
 
 			// Invoke event
-			const actor = combatant.actor;
-			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfTurn, this.round).forActor(actor));
+			Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfTurn, this.round).forCombatant(combatant));
 			this.setCombatant(null);
 
 			// Setup
@@ -505,9 +519,8 @@ export class FUCombat extends Combat {
 		Hooks.callAll(`combatRound`, this, updateData, updateOptions);
 		SOCKET.executeForOthers(MESSAGES.RoundChanged);
 		// Invoke our custom event
-		const actors = this.getActors();
-		console.debug(`Round ended for ${actors.length} actors`);
-		Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfRound, this.round).forActors(actors));
+		console.debug(`Round ended for ${this.combatants.length} combatants`);
+		Hooks.callAll(FUHooks.COMBAT_EVENT, new CombatEvent(FU.combatEvent.endOfRound, this.round).forCombatants(this.combatants));
 		// Update the internals
 		return this.update(updateData, updateOptions);
 	}

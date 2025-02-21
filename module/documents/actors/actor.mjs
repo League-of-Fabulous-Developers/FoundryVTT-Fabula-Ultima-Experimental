@@ -13,6 +13,19 @@ import { Flags } from '../../helpers/flags.mjs';
  * @property {Boolean} inCombat
  * @property {String} id The canonical identifier for this Document.
  * @property {String} uuid A Universally Unique Identifier (uuid) for this Document instance.
+ * @property {Function<Boolean, Boolean,[Token]>} getActiveTokens Retrieve an Array of active tokens which represent this Actor in the current
+ * canvas Scene. If the canvas is not currently active, or there are no linked actors, the returned Array will be empty.
+ * If the Actor is a synthetic token actor, only the exact Token which it represents will be returned.
+ */
+
+/**
+ * @typedef Token
+ * @description A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
+ * @property {String} name Convenience access to the token's nameplate string
+ * @property {Actor} actor A convenient reference to the Actor object associated with the Token embedded document.
+ * @property {Combatant} combatant Return a reference to a Combatant that represents this Token, if one is present in the current encounter.
+ * @property {Boolean} isTargeted An indicator for whether the Token is currently targeted by the active game User
+ * @property {Point} center The Token's current central position
  */
 
 /**
@@ -170,6 +183,11 @@ export class FUActor extends Actor {
 		await super._preUpdate(changed, options, user);
 	}
 
+	/**
+	 * @returns {Promise<void>}
+	 * @private
+	 * @override
+	 */
 	async _onUpdate(changed, options, userId) {
 		const { hp } = this.system?.resources || {};
 
@@ -178,6 +196,14 @@ export class FUActor extends Actor {
 			const shouldBeInCrisis = hp.value <= crisisThreshold;
 			const isInCrisis = this.statuses.has('crisis');
 			if (shouldBeInCrisis !== isInCrisis) {
+				Hooks.call(
+					FUHooks.CRISIS_EVENT,
+					/** @type CrisisEvent **/
+					{
+						actor: this,
+						token: this.resolveToken(),
+					},
+				);
 				await toggleStatusEffect(this, 'crisis');
 			}
 
@@ -185,6 +211,14 @@ export class FUActor extends Actor {
 			const shouldBeKO = hp.value === 0; // KO when HP is 0
 			const isKO = this.statuses.has('ko');
 			if (shouldBeKO !== isKO) {
+				Hooks.call(
+					FUHooks.DEFEAT_EVENT,
+					/** @type DefeatEvent **/
+					{
+						actor: this,
+						token: this.resolveToken(),
+					},
+				);
 				await toggleStatusEffect(this, 'ko');
 			}
 		}
@@ -350,6 +384,23 @@ export class FUActor extends Actor {
 			ui.notifications.info(game.i18n.format('FU.UseMetaCurrencyNotificationInsufficientPoints', { actor: this.name, type: metaCurrency }));
 			return false;
 		}
+	}
+
+	/**
+	 * @returns {Token}
+	 * @remarks https://foundryvtt.com/api/classes/client.TokenDocument.html
+	 */
+	resolveToken() {
+		// For unlinked actors (usually NPCs)
+		if (this.token) {
+			return this.token.object;
+		}
+		// For linked actors (PCs, sometimes villains?)
+		const tokens = this.getActiveTokens();
+		if (tokens) {
+			return tokens[0];
+		}
+		throw Error(`Failed to get token for ${this.uuid}`);
 	}
 
 	/**

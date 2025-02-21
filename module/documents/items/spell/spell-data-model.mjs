@@ -11,6 +11,7 @@ import { CheckConfiguration } from '../../../checks/check-configuration.mjs';
 import { ActionCostDataModel } from '../common/action-cost-data-model.mjs';
 import { TargetingDataModel } from '../common/targeting-data-model.mjs';
 import { CommonSections } from '../../../checks/common-sections.mjs';
+import { Traits } from '../../../pipelines/traits.mjs';
 
 /**
  * @param {CheckV2} check
@@ -29,6 +30,8 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 		check.additionalData.hasDamage = item.system.rollInfo.damage.hasDamage.value;
 		const configurer = MagicCheck.configure(check)
 			.setDamage(item.system.rollInfo.damage.type.value, item.system.rollInfo.damage.value)
+			.addItemName(item)
+			.addTraits(item.system.rollInfo.damage.type.value, Traits.Spell)
 			.setTargetedDefense('mdef')
 			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value);
 

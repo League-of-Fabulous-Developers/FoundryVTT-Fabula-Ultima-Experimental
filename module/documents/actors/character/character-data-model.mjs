@@ -10,6 +10,7 @@ import { DerivedValuesDataModel } from '../common/derived-values-data-model.mjs'
 import { EquipDataModel } from '../common/equip-data-model.mjs';
 import { PilotVehicleDataModel } from './pilot-vehicle-data-model.mjs';
 import { SETTINGS } from '../../../settings.js';
+import { OverridesDataModel } from '../common/overrides-data-model.mjs';
 
 const CLASS_HP_BENEFITS = 5;
 const CLASS_MP_BENEFITS = 5;
@@ -58,6 +59,7 @@ function heroicMpBenefits(dataModel) {
  * @property {PilotVehicleDataModel} vehicle
  * @property {string} description
  * @property {CharacterSkillTracker} tlTracker
+ * @property {OverridesDataModel} overrides Overrides for default behaviour
  *
  */
 export class CharacterDataModel extends foundry.abstract.TypeDataModel {
@@ -121,6 +123,7 @@ export class CharacterDataModel extends foundry.abstract.TypeDataModel {
 			bonuses: new EmbeddedDataField(BonusesDataModel, {}),
 			immunities: new EmbeddedDataField(ImmunitiesDataModel, {}),
 			vehicle: new EmbeddedDataField(PilotVehicleDataModel, {}),
+			overrides: new EmbeddedDataField(OverridesDataModel, {}),
 			description: new HTMLField(),
 		};
 	}

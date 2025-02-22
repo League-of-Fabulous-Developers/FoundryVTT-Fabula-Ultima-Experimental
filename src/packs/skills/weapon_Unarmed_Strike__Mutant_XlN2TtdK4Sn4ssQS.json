@@ -1,0 +1,162 @@
+{
+  "folder": "6hLDMWrdgLLCVK8G",
+  "name": "Unarmed Strike: Mutant",
+  "type": "weapon",
+  "_id": "XlN2TtdK4Sn4ssQS",
+  "img": "systems/projectfu/styles/static/compendium/classes/mutant/mutant_akromorphosis.png",
+  "system": {
+    "fuid": "unarmed-strike-mutant",
+    "subtype": {},
+    "summary": {
+      "value": ""
+    },
+    "description": "",
+    "isFavored": {
+      "value": false
+    },
+    "showTitleCard": {
+      "value": false
+    },
+    "cost": {
+      "value": 100
+    },
+    "isMartial": {
+      "value": false
+    },
+    "quality": {
+      "value": ""
+    },
+    "def": {
+      "value": 0
+    },
+    "mdef": {
+      "value": 0
+    },
+    "init": {
+      "value": 0
+    },
+    "attributes": {
+      "primary": {
+        "value": "dex"
+      },
+      "secondary": {
+        "value": "mig"
+      }
+    },
+    "accuracy": {
+      "value": 0
+    },
+    "defense": "def",
+    "damage": {
+      "value": 0
+    },
+    "type": {
+      "value": "melee"
+    },
+    "category": {
+      "value": "brawling"
+    },
+    "hands": {
+      "value": "one-handed"
+    },
+    "impType": {
+      "value": "minor"
+    },
+    "damageType": {
+      "value": "physical"
+    },
+    "isBehavior": {
+      "value": false
+    },
+    "weight": {
+      "value": 1
+    },
+    "isCustomWeapon": {
+      "value": false
+    },
+    "source": {
+      "value": "FUTF155"
+    },
+    "rollInfo": {
+      "useWeapon": {
+        "hrZero": {
+          "value": false
+        }
+      }
+    }
+  },
+  "effects": [
+    {
+      "name": "Effect: Akromorphosis",
+      "img": "systems/projectfu/styles/static/compendium/classes/mutant/mutant_akromorphosis.png",
+      "type": "base",
+      "system": {},
+      "changes": [
+        {
+          "key": "system.bonuses.damage.value",
+          "value": "6+(&sl(\"akromorphosis\")l*2)",
+          "mode": 2,
+          "priority": 30
+        },
+        {
+          "key": "system.accuracy.value",
+          "value": "&sl(\"akromorphosis\")",
+          "mode": 2,
+          "priority": 30
+        }
+      ],
+      "disabled": false,
+      "duration": {
+        "startTime": null,
+        "seconds": null,
+        "combat": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "description": "<p>Your <strong>unarmed strikes</strong> deal <strong>【6 + (SL × 2)】</strong> extra damage, and you gain a bonus equal to <strong>【SL】</strong> to your Accuracy Checks with them.</p>",
+      "origin": "Compendium.projectfu.skills.Item.WV3lBnVzMFBB2irj",
+      "tint": "#ffffff",
+      "transfer": false,
+      "statuses": [],
+      "sort": 0,
+      "flags": {
+        "projectfu": {
+          "type": "default",
+          "source": "",
+          "CrisisInteraction": "none"
+        }
+      },
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "12.330",
+        "systemId": "projectfu",
+        "systemVersion": "#{VERSION}#",
+        "createdTime": 1740172175749,
+        "modifiedTime": 1740172175749,
+        "lastModifiedBy": "esOkelwPNblkbxW3"
+      },
+      "_id": "v81MYXQ0Fkt9JjVa",
+      "_key": "!items.effects!XlN2TtdK4Sn4ssQS.v81MYXQ0Fkt9JjVa"
+    }
+  ],
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "esOkelwPNblkbxW3": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.330",
+    "systemId": "projectfu",
+    "systemVersion": "#{VERSION}#",
+    "createdTime": 1740172132903,
+    "modifiedTime": 1740172184648,
+    "lastModifiedBy": "esOkelwPNblkbxW3"
+  },
+  "_key": "!items!XlN2TtdK4Sn4ssQS"
+}

@@ -14,7 +14,7 @@
     "featureType": "projectfu.dance",
     "data": {
       "duration": "nextTurn",
-      "description": "<p>Choose one option: you gain Resistance to <strong>ice</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>ice</strong>.</p><hr><p>@LOSS[10 mp]</p><p>@EFFECT[eyJuYW1lIjoiUmVzaXN0YW5jZTogSWNlIiwiY2hhbmdlcyI6W3sia2V5Ijoic3lzdGVtLmFmZmluaXRpZXMuaWNlIiwibW9kZSI6MCwidmFsdWUiOiJ1cGdyYWRlIn1dLCJpY29uIjoiaWNvbnMvbWFnaWMvZGVmZW5zaXZlL3NoaWVsZC1iYXJyaWVyLWZsYW1pbmctcGVudGFnb24tYmx1ZS53ZWJwIn0=]</p><p></p>"
+      "description": "<p>Choose one option: you gain Resistance to <strong>ice</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>ice</strong>.</p><hr><ul><li><p><strong>You:</strong> @LOSS[10 mp] @AFFINITY[ice resistance] @AFFINITY[ice damage]</p></li></ul>"
     },
     "source": "FUHF145",
     "fuid": "yeti-dance"
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710176719942,
-    "modifiedTime": 1724180861974,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175763047,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

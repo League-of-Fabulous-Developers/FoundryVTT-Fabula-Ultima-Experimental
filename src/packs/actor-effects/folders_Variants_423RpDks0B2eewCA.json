@@ -1,0 +1,22 @@
+{
+  "name": "Variants",
+  "sorting": "a",
+  "folder": null,
+  "type": "Item",
+  "_id": "423RpDks0B2eewCA",
+  "description": "",
+  "sort": 0,
+  "color": null,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.330",
+    "systemId": "projectfu",
+    "systemVersion": "#{VERSION}#",
+    "createdTime": 1740170689592,
+    "modifiedTime": 1740170689592,
+    "lastModifiedBy": "esOkelwPNblkbxW3"
+  },
+  "_key": "!folders!423RpDks0B2eewCA"
+}

@@ -13,7 +13,7 @@
     },
     "featureType": "projectfu.dance",
     "data": {
-      "description": "<p>Choose one option: you gain Resistance to <strong>light</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>light</strong>.</p><hr><p>@LOSS[10 mp] @EFFECT[eyJuYW1lIjoiUmVzaXN0YW5jZTogTGlnaHQiLCJjaGFuZ2VzIjpbeyJrZXkiOiJzeXN0ZW0uYWZmaW5pdGllcy5saWdodCIsIm1vZGUiOjAsInZhbHVlIjoidXBncmFkZSJ9XSwiaWNvbiI6Imljb25zL21hZ2ljL2RlZmVuc2l2ZS9zaGllbGQtYmFycmllci1mbGFtaW5nLXBlbnRhZ29uLXB1cnBsZS1vcmFuZ2Uud2VicCJ9]</p>",
+      "description": "<p>Choose one option: you gain Resistance to <strong>light</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>light</strong>.</p><hr><ul><li><p><strong>You:</strong> @LOSS[10 mp] @AFFINITY[light resistance] @AFFINITY[light damage]</p></li></ul>",
       "duration": "nextTurn"
     },
     "source": "FUHF144",
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710041769185,
-    "modifiedTime": 1724180863335,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175169451,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

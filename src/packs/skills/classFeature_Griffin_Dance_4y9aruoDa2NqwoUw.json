@@ -13,7 +13,7 @@
     },
     "featureType": "projectfu.dance",
     "data": {
-      "description": "<p>Choose one option: you gain Resistance to <strong>air</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>air</strong>.</p><hr><p>@LOSS[10 mp] @EFFECT[eyJuYW1lIjoiUmVzaXN0YW5jZTogQWlyIiwiY2hhbmdlcyI6W3sia2V5Ijoic3lzdGVtLmFmZmluaXRpZXMuYWlyIiwibW9kZSI6MCwidmFsdWUiOiJ1cGdyYWRlIn1dLCJpY29uIjoiaWNvbnMvbWFnaWMvZGVmZW5zaXZlL3NoaWVsZC1iYXJyaWVyLWZsYW1pbmctcGVudGFnb24tdGVhbC1wdXJwbGUud2VicCJ9]</p>",
+      "description": "<p>Choose one option: you gain Resistance to <strong>air</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>air</strong>.</p><hr><ul><li><p><strong>You:</strong> @LOSS[10 mp] @AFFINITY[air resistance] @AFFINITY[air damage]</p></li></ul>",
       "duration": "nextTurn"
     },
     "source": "FUHF144",
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710175496075,
-    "modifiedTime": 1724180861413,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175214604,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

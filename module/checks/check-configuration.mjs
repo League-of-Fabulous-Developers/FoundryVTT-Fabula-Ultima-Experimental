@@ -2,6 +2,7 @@ import { SETTINGS } from '../settings.js';
 import { FU, SYSTEM } from '../helpers/config.mjs';
 import { Flags } from '../helpers/flags.mjs';
 import { CheckHooks } from './check-hooks.mjs';
+import { CharacterDataModel } from '../documents/actors/character/character-data-model.mjs';
 
 const TARGETS = 'targets';
 const TARGETED_DEFENSE = 'targetedDefense';
@@ -313,6 +314,23 @@ class CheckConfigurer {
 	modifyDifficulty(callback) {
 		const difficulty = this.#check.additionalData[DIFFICULTY] ?? null;
 		this.#check.additionalData[DIFFICULTY] = callback(difficulty);
+		return this;
+	}
+
+	/**
+	 * @description Handles specific overrides on the actor
+	 * @param {FUActor} actor
+	 * @return {CheckConfigurer}
+	 */
+	setOverrides(actor) {
+		// Potential override to damage type
+		if (actor.system instanceof CharacterDataModel) {
+			const characterData = actor.system;
+			const damageType = characterData.overrides.damageType;
+			if (damageType && damageType !== 'untyped') {
+				this.#check.additionalData[DAMAGE].type = damageType;
+			}
+		}
 		return this;
 	}
 }

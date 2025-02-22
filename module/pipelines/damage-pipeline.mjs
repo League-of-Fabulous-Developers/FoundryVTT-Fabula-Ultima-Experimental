@@ -123,7 +123,7 @@ const Traits = {
  * @property {Number} affinity The index of the affinity
  * @property {String} affinityMessage The localized affinity message to use
  * @property {FU.damageTypes} damageType
- * @property {String} extra An optional expression to evaluate for extra damage
+ * @property {String} extra An optional expression to evaluate for onApply damage
  * @property {Number} amount The base amount before bonuses or modifiers are applied
  * @property {Map<String, Number>} bonuses Increments
  * @property {Map<String, Number>} modifiers Multipliers
@@ -327,6 +327,10 @@ function calculateResult(context) {
 	for (const [key, value] of context.bonuses) {
 		result += value;
 		context.recordStep(key, value > 0 ? `+${value}` : value, result);
+	}
+	// If negative modifiers reduce incoming damage below 0...
+	if (result < 0) {
+		result = 0;
 	}
 	// Multipliers (*)
 	for (const [key, value] of context.modifiers) {

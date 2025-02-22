@@ -54,7 +54,9 @@
       "type": {
         "value": "physical"
       },
-      "extra": "^backlash(mig, hp)+$sl"
+      "extra": "^backlash(mig, hp)+$sl",
+      "onRoll": "^backlash(mig,hp)+$sl",
+      "onApply": ""
     },
     "impdamage": {
       "hasImpDamage": {
@@ -119,7 +121,7 @@
     "defense": "def",
     "fuid": "shadow-strike",
     "targeting": {
-      "rule": "single"
+      "rule": "special"
     }
   },
   "effects": [],
@@ -136,7 +138,7 @@
     "systemVersion": "#{VERSION}#",
     "coreVersion": "12.330",
     "createdTime": 1706496911469,
-    "modifiedTime": 1739986865587,
+    "modifiedTime": 1740068853274,
     "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null

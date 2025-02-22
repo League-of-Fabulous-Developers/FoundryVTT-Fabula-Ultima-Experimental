@@ -13,7 +13,7 @@
     },
     "featureType": "projectfu.dance",
     "data": {
-      "description": "<p>Choose another creature that is able to see you. If that creature is already @EFFECT[slow], they immediately suffer @EFFECT[shaken].</p><hr><p><strong>@LOSS[10 mp]</strong></p>",
+      "description": "<p>Choose another creature that is able to see you. If that creature is already @EFFECT[slow], they immediately suffer @EFFECT[shaken].</p><hr><ul><li><p><strong>You: @LOSS[10 mp]</strong></p></li></ul>",
       "duration": "instant"
     },
     "source": "FUHF144",
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710041861387,
-    "modifiedTime": 1724180862170,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175182553,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

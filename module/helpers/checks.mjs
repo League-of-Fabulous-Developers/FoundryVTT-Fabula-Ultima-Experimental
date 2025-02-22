@@ -808,8 +808,9 @@ export async function promptCheck(actor, title, action) {
 
 		if (game.settings.get(SYSTEM, SETTINGS.checksV2)) {
 			if (check.modifier) {
-				Hooks.once(CheckHooks.prepareCheck, (check) =>
-					check.modifiers.push({
+				// Beware of shadowing!
+				Hooks.once(CheckHooks.prepareCheck, (_check) =>
+					_check.modifiers.push({
 						value: check.modifier,
 						label: 'FU.CheckSituationalModifier',
 					}),

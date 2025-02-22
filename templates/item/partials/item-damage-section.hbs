@@ -28,8 +28,12 @@
             <input type="number" name="system.damage.value" value="{{ system.damage.value }}" class="resource-inputs" {{disabled (not system.damage.hasDamage)}} />
         </div>
         <div class="resource-content flexcol flex-group-center">
-            <label class="resource-label-m">{{localize 'FU.Extra'}}</label>
-            <input type="text" name="system.damage.extra" value="{{ system.damage.extra }}"  class="resource-inputs select-dropdown-l" />
+            <label class="resource-label-m">{{localize 'FU.DamageOnRoll'}}</label>
+            <input type="text" name="system.damage.onRoll" value="{{ system.damage.onRoll }}"  class="resource-inputs select-dropdown-l" />
+        </div>
+        <div class="resource-content flexcol flex-group-center">
+            <label class="resource-label-m">{{localize 'FU.DamageOnApply'}}</label>
+            <input type="text" name="system.damage.onApply" value="{{ system.damage.onApply }}"  class="resource-inputs select-dropdown-l" />
         </div>
     </div>
 </fieldset>

@@ -13,6 +13,7 @@ import { UseWeaponDataModelV2 } from '../common/use-weapon-data-model-v2.mjs';
 import { ItemAttributesDataModelV2 } from '../common/item-attributes-data-model-v2.mjs';
 import { DamageDataModelV2 } from '../common/damage-data-model-v2.mjs';
 import { SkillMigrations } from './skill-migrations.mjs';
+import { ExpressionContext, Expressions } from '../../../expressions/expressions.mjs';
 
 const weaponUsedBySkill = 'weaponUsedBySkill';
 const skillForAttributeCheck = 'skillForAttributeCheck';
@@ -281,10 +282,19 @@ export class SkillDataModel extends foundry.abstract.TypeDataModel {
 					};
 				});
 
-				// Append expression value if present
-				const extra = this.damage.extra;
-				if (extra) {
-					configure.setExtraDamage(extra);
+				const onRoll = this.damage.onRoll;
+				if (onRoll) {
+					const targets = inspect.getTargets();
+					const context = ExpressionContext.fromTargetData(actor, item, targets);
+					const extraDamage = await Expressions.evaluateAsync(onRoll, context);
+					if (extraDamage > 0) {
+						configure.addDamageBonus('FU.DamageOnRoll', extraDamage);
+					}
+				}
+
+				const onApply = this.damage.onApply;
+				if (onApply) {
+					configure.setExtraDamage(onApply);
 				}
 			}
 		};

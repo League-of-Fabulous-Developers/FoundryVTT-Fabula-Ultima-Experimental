@@ -14,7 +14,7 @@
     "featureType": "projectfu.dance",
     "data": {
       "duration": "nextTurn",
-      "description": "<p>Choose one option: you gain Resistance to <strong>fire</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>fire</strong>.</p><hr><p>@LOSS[10 mp] @EFFECT[eyJuYW1lIjoiUmVzaXN0YW5jZTogRmlyZSIsImNoYW5nZXMiOlt7ImtleSI6InN5c3RlbS5hZmZpbml0aWVzLmZpcmUiLCJtb2RlIjowLCJ2YWx1ZSI6InVwZ3JhZGUifV0sImljb24iOiJpY29ucy9tYWdpYy9kZWZlbnNpdmUvc2hpZWxkLWJhcnJpZXItZmxhbWluZy1wZW50YWdvbi1yZWQud2VicCJ9]</p>"
+      "description": "<p>Choose one option: you gain Resistance to <strong>fire</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>fire</strong>.</p><hr><ul><li><p><strong>You:</strong> @LOSS[10 mp] @AFFINITY[fire resistance] @AFFINITY[fire damage]</p></li></ul>"
     },
     "source": "FUHF145",
     "fuid": "phoenix-dance"
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710176484724,
-    "modifiedTime": 1724180862393,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175572344,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

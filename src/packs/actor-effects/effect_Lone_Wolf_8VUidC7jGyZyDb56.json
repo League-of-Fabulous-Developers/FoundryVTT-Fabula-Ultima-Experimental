@@ -1,0 +1,87 @@
+{
+  "folder": "423RpDks0B2eewCA",
+  "name": "Lone Wolf",
+  "type": "effect",
+  "_id": "8VUidC7jGyZyDb56",
+  "img": "icons/creatures/abilities/wolf-howl-moon-purple.webp",
+  "system": {
+    "fuid": "lone-wolf",
+    "cost": {
+      "value": 0
+    }
+  },
+  "effects": [
+    {
+      "img": "icons/creatures/abilities/wolf-howl-moon-purple.webp",
+      "origin": "Compendium.projectfu.actor-effects.Item.8VUidC7jGyZyDb56",
+      "duration": {
+        "rounds": null,
+        "startTime": null,
+        "seconds": null,
+        "combat": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "disabled": false,
+      "name": "Lone Wolf",
+      "_id": "mQzgJKqdYcJo1nNI",
+      "type": "base",
+      "system": {},
+      "changes": [
+        {
+          "key": "system.overrides.turns",
+          "mode": 2,
+          "value": "2",
+          "priority": null
+        },
+        {
+          "key": "system.resources.hp.max",
+          "mode": 1,
+          "value": "2",
+          "priority": null
+        }
+      ],
+      "description": "<p>You take <strong>2 turns per round</strong> and <strong>double</strong> your <strong>maximum HP.</strong></p>",
+      "tint": "#ffffff",
+      "transfer": true,
+      "statuses": [],
+      "sort": 0,
+      "flags": {
+        "projectfu": {
+          "type": "default",
+          "source": "",
+          "CrisisInteraction": "none"
+        }
+      },
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "12.330",
+        "systemId": "projectfu",
+        "systemVersion": "#{VERSION}#",
+        "createdTime": 1740170720297,
+        "modifiedTime": 1740171140461,
+        "lastModifiedBy": "esOkelwPNblkbxW3"
+      },
+      "_key": "!items.effects!8VUidC7jGyZyDb56.mQzgJKqdYcJo1nNI"
+    }
+  ],
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "esOkelwPNblkbxW3": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.330",
+    "systemId": "projectfu",
+    "systemVersion": "#{VERSION}#",
+    "createdTime": 1740170696587,
+    "modifiedTime": 1740170717013,
+    "lastModifiedBy": "esOkelwPNblkbxW3"
+  },
+  "_key": "!items!8VUidC7jGyZyDb56"
+}

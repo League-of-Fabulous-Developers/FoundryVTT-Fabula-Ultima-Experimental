@@ -55,7 +55,9 @@
       "value": 0,
       "type": {
         "value": "physical"
-      }
+      },
+      "onRoll": "",
+      "onApply": ""
     },
     "impdamage": {
       "hasImpDamage": {
@@ -120,7 +122,57 @@
     },
     "fuid": "frenetic-footwork"
   },
-  "effects": [],
+  "effects": [
+    {
+      "img": "systems/projectfu/styles/static/compendium/classes/dancer/dancer_frenetic_footwork.png",
+      "origin": "Compendium.projectfu.skills.Item.R0F1K6i1gjNWNklq",
+      "duration": {
+        "rounds": null,
+        "startTime": null,
+        "seconds": null,
+        "combat": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "disabled": true,
+      "name": "Frenetic Footwork",
+      "_id": "2IMJA47lvSXwD8a6",
+      "type": "base",
+      "system": {},
+      "changes": [
+        {
+          "key": "system.bonuses.accuracy.opposedCheck",
+          "mode": 2,
+          "value": "$sl*2",
+          "priority": null
+        }
+      ],
+      "description": "",
+      "tint": "#ffffff",
+      "transfer": true,
+      "statuses": [],
+      "sort": 0,
+      "flags": {
+        "projectfu": {
+          "type": "default",
+          "source": "",
+          "CrisisInteraction": "none"
+        }
+      },
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "12.330",
+        "systemId": "projectfu",
+        "systemVersion": "#{VERSION}#",
+        "createdTime": 1740175867509,
+        "modifiedTime": 1740176047881,
+        "lastModifiedBy": "esOkelwPNblkbxW3"
+      },
+      "_key": "!items.effects!R0F1K6i1gjNWNklq.2IMJA47lvSXwD8a6"
+    }
+  ],
   "sort": 400000,
   "ownership": {
     "default": 0,
@@ -131,10 +183,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1706560364056,
-    "modifiedTime": 1724180862210,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740172886102,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

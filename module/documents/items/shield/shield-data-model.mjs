@@ -24,7 +24,8 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 			.setTargetedDefense(item.system.defense)
 			.addItemDamageBonuses(item, actor)
 			.addItemAccuracyBonuses(item, actor)
-			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value);
+			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value)
+			.setOverrides(actor);
 	}
 };
 

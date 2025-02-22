@@ -13,7 +13,7 @@
     },
     "featureType": "projectfu.dance",
     "data": {
-      "description": "<p>Choose one option: you gain Resistance to <strong>bolt</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>bolt</strong>.</p><hr><p>@LOSS[10 mp] @EFFECT[eyJuYW1lIjoiUmVzaXN0YW5jZTogQm9sdCIsImNoYW5nZXMiOlt7ImtleSI6InN5c3RlbS5hZmZpbml0aWVzLmJvbHQiLCJtb2RlIjowLCJ2YWx1ZSI6InVwZ3JhZGUifV0sImljb24iOiJpY29ucy9tYWdpYy9kZWZlbnNpdmUvc2hpZWxkLWJhcnJpZXItZmxhbWluZy1wZW50YWdvbi1ibHVlLXllbGxvdy53ZWJwIn0=]</p>",
+      "description": "<p>Choose one option: you gain Resistance to <strong>bolt</strong> damage; <strong>or</strong> all damage dealt by your attacks and spells becomes <strong>bolt</strong>.</p><hr><ul><li><p><strong>You:</strong> @LOSS[10 mp] @AFFINITY[bolt resistance] @AFFINITY[bolt damage]</p></li></ul>",
       "duration": "nextTurn"
     },
     "source": "FUHF144",
@@ -32,10 +32,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1710175451986,
-    "modifiedTime": 1724180862476,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740175276449,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

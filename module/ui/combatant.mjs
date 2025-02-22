@@ -1,5 +1,6 @@
 import { FRIENDLY, HOSTILE } from './combat.mjs';
 import { NpcDataModel } from '../documents/actors/npc/npc-data-model.mjs';
+import { CharacterDataModel } from '../documents/actors/character/character-data-model.mjs';
 
 Hooks.on('preCreateCombatant', function (document, data, options, userId) {
 	if (document instanceof FUCombatant && document.actorId === null) {
@@ -36,8 +37,16 @@ export class FUCombatant extends Combatant {
 	 * @return number
 	 */
 	get totalTurns() {
-		if (this.token?.actor && this.token.actor.system instanceof NpcDataModel) {
-			return this.token.actor.system.rank.replacedSoldiers;
+		if (this.token?.actor) {
+			if (this.token.actor.system instanceof NpcDataModel) {
+				return this.token.actor.system.rank.replacedSoldiers;
+			} else if (this.token.actor.system instanceof CharacterDataModel) {
+				/** @type CharacterDataModel **/
+				const characterData = this.token.actor.system;
+				if (characterData.overrides && characterData.overrides.turns) {
+					return characterData.overrides.turns;
+				}
+			}
 		}
 		return 1;
 	}

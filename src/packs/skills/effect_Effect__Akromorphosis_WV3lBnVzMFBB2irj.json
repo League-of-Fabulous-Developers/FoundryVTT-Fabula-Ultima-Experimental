@@ -1,0 +1,87 @@
+{
+  "folder": "6hLDMWrdgLLCVK8G",
+  "name": "Effect: Akromorphosis",
+  "type": "effect",
+  "_id": "WV3lBnVzMFBB2irj",
+  "img": "systems/projectfu/styles/static/compendium/classes/mutant/mutant_akromorphosis.png",
+  "system": {
+    "fuid": "effect-akromorphosis",
+    "cost": {
+      "value": 0
+    }
+  },
+  "effects": [
+    {
+      "img": "systems/projectfu/styles/static/compendium/classes/mutant/mutant_akromorphosis.png",
+      "origin": "Compendium.projectfu.skills.Item.WV3lBnVzMFBB2irj",
+      "duration": {
+        "rounds": null,
+        "startTime": null,
+        "seconds": null,
+        "combat": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "disabled": false,
+      "name": "Effect: Akromorphosis",
+      "_id": "LxZDU3Qgsf5a6Vfh",
+      "type": "base",
+      "system": {},
+      "changes": [
+        {
+          "key": "system.bonuses.damage.value",
+          "mode": 2,
+          "value": "6+(&sl(\"akromorphosis\")l*2)",
+          "priority": null
+        },
+        {
+          "key": "system.accuracy.value",
+          "mode": 2,
+          "value": "&sl(\"akromorphosis\")",
+          "priority": null
+        }
+      ],
+      "description": "<p>Your <strong>unarmed strikes</strong> deal <strong>【6 + (SL × 2)】</strong> extra damage, and you gain a bonus equal to <strong>【SL】</strong> to your Accuracy Checks with them.</p>",
+      "tint": "#ffffff",
+      "transfer": false,
+      "statuses": [],
+      "sort": 0,
+      "flags": {
+        "projectfu": {
+          "type": "default",
+          "source": "",
+          "CrisisInteraction": "none"
+        }
+      },
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "12.330",
+        "systemId": "projectfu",
+        "systemVersion": "#{VERSION}#",
+        "createdTime": 1740171581074,
+        "modifiedTime": 1740172041667,
+        "lastModifiedBy": "esOkelwPNblkbxW3"
+      },
+      "_key": "!items.effects!WV3lBnVzMFBB2irj.LxZDU3Qgsf5a6Vfh"
+    }
+  ],
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "esOkelwPNblkbxW3": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.330",
+    "systemId": "projectfu",
+    "systemVersion": "#{VERSION}#",
+    "createdTime": 1740171578030,
+    "modifiedTime": 1740171601657,
+    "lastModifiedBy": "esOkelwPNblkbxW3"
+  },
+  "_key": "!items!WV3lBnVzMFBB2irj"
+}

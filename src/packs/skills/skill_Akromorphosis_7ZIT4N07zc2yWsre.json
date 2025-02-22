@@ -9,7 +9,7 @@
     "summary": {
       "value": ""
     },
-    "description": "<p>Your <strong>unarmed strikes</strong> deal <strong>【6 + (SL × 2)】</strong> extra damage, and you gain a bonus equal to <strong>【SL】</strong> to your Accuracy Checks with them.</p><p>At the start of your turn during a conflict, you may choose a weapon Category other than <strong>brawling</strong>. If you do, your <strong>unarmed strikes</strong> now belong to the chosen Category; if you choose <strong>bow</strong>, <strong>firearm</strong> or <strong>thrown</strong>, they become <strong>ranged</strong> weapons instead of <strong>melee</strong>; if you choose <strong>dagger</strong> or <strong>sword</strong>, they cannot be used with <strong>Triple Slash</strong> (see <strong>High Fantasy Atlas</strong>, page <strong>161</strong>). These changes last until the start of your next turn.</p>",
+    "description": "<p>Your <strong>unarmed strikes</strong> deal <strong>【6 + (SL × 2)】</strong> extra damage, and you gain a bonus equal to <strong>【SL】</strong> to your Accuracy Checks with them.</p><p>At the start of your turn during a conflict, you may choose a weapon Category other than <strong>brawling</strong>. If you do, your <strong>unarmed strikes</strong> now belong to the chosen Category; if you choose <strong>bow</strong>, <strong>firearm</strong> or <strong>thrown</strong>, they become <strong>ranged</strong> weapons instead of <strong>melee</strong>; if you choose <strong>dagger</strong> or <strong>sword</strong>, they cannot be used with <strong>Triple Slash</strong> (see <strong>High Fantasy Atlas</strong>, page <strong>161</strong>). These changes last until the start of your next turn.</p><p><em>For automation purposes we suggest adding @UUID[Compendium.projectfu.skills.XlN2TtdK4Sn4ssQS]{Unarmed Strike: Mutant} to your character as it automates the bonuses.</em></p><p></p>",
     "isFavored": {
       "value": false
     },
@@ -53,7 +53,10 @@
       "value": 0,
       "type": {
         "value": "physical"
-      }
+      },
+      "expression": "",
+      "onRoll": "",
+      "onApply": ""
     },
     "impdamage": {
       "hasImpDamage": {
@@ -123,10 +126,10 @@
   "_stats": {
     "systemId": "projectfu",
     "systemVersion": "#{VERSION}#",
-    "coreVersion": "12.331",
+    "coreVersion": "12.330",
     "createdTime": 1711429218464,
-    "modifiedTime": 1724180861515,
-    "lastModifiedBy": "dobQfkKFj2NK96cc",
+    "modifiedTime": 1740172467388,
+    "lastModifiedBy": "esOkelwPNblkbxW3",
     "compendiumSource": null,
     "duplicateSource": null
   },

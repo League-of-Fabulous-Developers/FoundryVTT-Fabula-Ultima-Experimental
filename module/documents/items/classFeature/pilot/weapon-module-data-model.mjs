@@ -35,7 +35,7 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 			});
 		}
 
-		const configurer = AccuracyCheck.configure(check).setDamage(module.damage.type, module.damage.bonus).addModelAccuracyBonuses(module, actor).setTargetedDefense(module.accuracy.defense);
+		const configurer = AccuracyCheck.configure(check).setDamage(module.damage.type, module.damage.bonus).addModelAccuracyBonuses(module, actor).setTargetedDefense(module.accuracy.defense).setOverrides(actor);
 
 		const category = module.category;
 

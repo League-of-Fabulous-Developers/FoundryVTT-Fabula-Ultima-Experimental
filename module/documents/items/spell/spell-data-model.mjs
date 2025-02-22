@@ -30,6 +30,7 @@ const prepareCheck = (check, actor, item, registerCallback) => {
 		const configurer = MagicCheck.configure(check)
 			.setDamage(item.system.rollInfo.damage.type.value, item.system.rollInfo.damage.value)
 			.setTargetedDefense('mdef')
+			.setOverrides(actor)
 			.modifyHrZero((hrZero) => hrZero || item.system.rollInfo.useWeapon.hrZero.value);
 
 		const spellBonus = actor.system.bonuses.damage.spell;
